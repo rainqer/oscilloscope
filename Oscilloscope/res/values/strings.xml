@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Oscilloscope</string>
+    <string name="blueetooth_unavailable">This device does not support bluetooth.</string>
+    <string name="new_device_found">New device found</string>
+    
+    <string name="action_settings">Settings</string>
+    <string name="setup_title">Oscilloscope Setup</string>
+    <string name="setup_scan">Scan for probes >></string>
+    <string name="setup_action_list">List of found devices:</string>
+    <string name="setup_action_scanning">Refreshing &#8230;</string>
+    <string name="setup_start_graph">Start Graph</string>
+    
+    <string name="graphs_title">Oscilloscope Graphs</string>
+    <string name="graphs_back">Back to Settings</string>
+    <string name="graphs_remove">Close this graph</string>
+    <string name="new_graph_added">New graph added</string>
+    <string name="graph_removed">Graph removed</string>
+    <string name="graphs_address">Address-</string>
+    <string name="graphs_name">Probe Name-</string>
+    
+    <string name="title_activity_setup_fragment">SetupFragment</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="device">new Device</string>
+    <string name="device_added">displaying</string>
+</resources>
