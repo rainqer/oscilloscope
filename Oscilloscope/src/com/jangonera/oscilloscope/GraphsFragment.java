@@ -2,7 +2,6 @@ package com.jangonera.oscilloscope;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,8 +30,8 @@ public class GraphsFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		context = (MainActivity) getActivity();
-		externalDataContainer = ExternalDataContainer.getContainer();
 		setDrawing(false);
+		externalDataContainer = ExternalDataContainer.getContainer();
 	}
 
 	@Override
@@ -49,7 +48,6 @@ public class GraphsFragment extends Fragment {
 		if (backButtonRequired)
 			createBackButton();
 		loadListOfGraphs();
-
 	}
 
 	private void loadListOfGraphs() {
@@ -60,9 +58,6 @@ public class GraphsFragment extends Fragment {
 			@Override
 			public View getView(int position, View convertView,
 					ViewGroup viewGroup) {
-
-				// return convertView;
-				// return graphs.get(position).getView(convertView, viewGroup);
 				return getGraphView(position, convertView, viewGroup);
 			}
 
@@ -87,6 +82,7 @@ public class GraphsFragment extends Fragment {
 	public void invalidateList() {
 		if (listAdapter != null) {
 			listAdapter.notifyDataSetChanged();
+			//listOfGraphs.invalidate();
 		}
 	}
 

@@ -11,7 +11,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
@@ -26,7 +25,7 @@ public class MainActivity extends FragmentActivity {
 	private GraphsFragment graphsFRAG;
 	private boolean inSetup;
 	private boolean displayingGraphs;
-	private boolean smallScreen;
+	//private boolean smallScreen;
 	private BluetoothManager bluetoothManager;
 	private ExternalDataService myService;
 	private ExternalDataContainer externalDataContainer;
@@ -126,8 +125,9 @@ public class MainActivity extends FragmentActivity {
 	}
 	
 	public void invalidateGraphsList() {
-		if (graphsFRAG != null)
+		if (graphsFRAG != null){
 			graphsFRAG.invalidateList();
+		}
 	}
 
 	public void loadSetup() {
@@ -139,11 +139,25 @@ public class MainActivity extends FragmentActivity {
 
 		// depending on the size of the screen load the fragment to different
 		// parts
-		if (setupArea == null)
-			ft.replace(R.id.fullScreen, setupFRAG);
-		else
+		
+		//multi
+		if (setupArea != null){
 			ft.replace(R.id.area_setup, setupFRAG);
-
+		}
+		
+		//mono
+		else{
+			//Remove the graph fragment that is not neccessary any more
+			//all fragments get finalized automatically
+			
+			GraphsFragment gf = (GraphsFragment) getSupportFragmentManager().findFragmentById(R.id.area_graphs);
+			if(gf != null){
+				ft.remove(gf);
+				graphsFRAG = null;
+			}
+			ft.replace(R.id.fullScreen, setupFRAG);
+		}	
+		
 		ft.commit();
 		inSetup = true;
 	}
@@ -163,6 +177,11 @@ public class MainActivity extends FragmentActivity {
 	public void removeGraph(int index){
 		if(externalDataContainer.removeReadyProbe(index)){
 			display(Const.GRAPH_REMOVED);
+			
+			//TODO
+			//why isn't mono screen working without this line (after rotation) ?
+			loadGraphs();
+			
 			invalidateGraphsList();
 			//refresh to display which probe is "displaying"
 			invalidateScannedDeviceList();
@@ -172,7 +191,7 @@ public class MainActivity extends FragmentActivity {
 	private void loadGraphs() {
 		// on big screen, load graphs only once a turn
 		View graphArea = findViewById(R.id.area_graphs);
-		if((graphArea != null)&&(displayingGraphs)){ 
+		if((graphArea != null)&&(displayingGraphs)){
 			return;
 		}
 		
@@ -195,7 +214,10 @@ public class MainActivity extends FragmentActivity {
 			//Remove the setup fragment that is not neccessary any more
 			//all fragments get finalized automatically
 			SetupFragment sf = (SetupFragment) getSupportFragmentManager().findFragmentById(R.id.area_setup);
-			if(sf != null) ft.remove(sf);
+			if(sf != null){
+				ft.remove(sf);
+				setupFRAG = null;
+			}
 			
 			ft.replace(R.id.fullScreen, graphsFRAG);
 			Log.i(Const.tag_MA, "small");
