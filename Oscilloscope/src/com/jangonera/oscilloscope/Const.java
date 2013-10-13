@@ -14,7 +14,7 @@ public class Const {
 	public static final String tag_MA = "MainActivity";
 	public static final String tag_GF = "GraphsFragment";
 	
-	public static final String WORKING_ON_SMALL_SCREEN = "small";
+	public static final String WORKING_ON_MONO_SCREEN = "small";
 	public static final String IN_SETUP = "setup";
 	public static final String BT_MANAGER = "bt";
 	

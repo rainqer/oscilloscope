@@ -11,6 +11,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
@@ -46,17 +47,22 @@ public class MainActivity extends FragmentActivity {
 		if (savedInstanceState != null) {
 			inSetup = savedInstanceState.getBoolean(Const.IN_SETUP);
 			// load either setup screen or graphs if working on small screen
-			if (savedInstanceState.getBoolean(Const.WORKING_ON_SMALL_SCREEN)) {
+			//if (savedInstanceState.getBoolean(Const.WORKING_ON_MONO_SCREEN)) {
+			if (workingOnMonoScreen()) {
 				if (inSetup) {
+					Log.i(Const.tag_MA, "in setup 1");
 					loadSetup();
 				} else {
+					Log.i(Const.tag_MA, "not in setup 1");
 					loadGraphs();
 				}
 			} else {
+				Log.i(Const.tag_MA, "not on small screen");
 				loadSetup();
 				loadGraphs();
 			}
 		} else {
+			Log.i(Const.tag_MA, "else");
 			loadSetup();
 		}
 
@@ -87,15 +93,17 @@ public class MainActivity extends FragmentActivity {
 		unregisterReceiver(bluetoothManager);
 	}
 
+	private boolean workingOnMonoScreen(){
+		if (findViewById(R.id.fullScreen) == null)
+			return false;
+		else
+			return true;
+	}
+	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		if (findViewById(R.id.fullScreen) == null)
-			smallScreen = false;
-		else
-			smallScreen = true;
-
-		outState.putBoolean(Const.WORKING_ON_SMALL_SCREEN, smallScreen);
+		//outState.putBoolean(Const.WORKING_ON_MONO_SCREEN, smallScreen);
 		outState.putBoolean(Const.IN_SETUP, inSetup);
 	}
 
@@ -142,7 +150,6 @@ public class MainActivity extends FragmentActivity {
 
 		ft.commit();
 		inSetup = true;
-		
 	}
 
 	public void addGraph(int index) {
@@ -169,21 +176,27 @@ public class MainActivity extends FragmentActivity {
 			return;
 		}
 		
-		// on small screen, load only graphs without setup
-		// on large screen, keep the setup and load the graphs beside
-		// Check the screen size. Area_graphs available on large screens only
+		// on mono screen, load only graphs without setup
+		// on multi screen, keep the setup and load the graphs beside
+		// Check the screen size. Area_graphs available on large-land screens only
 		// if (graphsFRAG == null)
 		graphsFRAG = new GraphsFragment();
 		ft = getSupportFragmentManager().beginTransaction();
 
-		// large
+		// multi
 		if (graphArea != null) {
 			ft.replace(R.id.area_graphs, graphsFRAG);
 		}
 
-		// small
+		// mono
 		else {
 			graphsFRAG.setBackButtonRequired(true);
+			
+			//Remove the setup fragment that is not neccessary any more
+			//all fragments get finalized automatically
+			SetupFragment sf = (SetupFragment) getSupportFragmentManager().findFragmentById(R.id.area_setup);
+			if(sf != null) ft.remove(sf);
+			
 			ft.replace(R.id.fullScreen, graphsFRAG);
 			Log.i(Const.tag_MA, "small");
 		}

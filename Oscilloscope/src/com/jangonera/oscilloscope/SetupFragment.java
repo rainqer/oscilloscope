@@ -2,6 +2,7 @@ package com.jangonera.oscilloscope;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -98,9 +99,10 @@ public class SetupFragment extends Fragment {
 				return externalDataContainer.scanDeviceQuantity();
 			}
 		};
-		listOfDevices.setAdapter(listAdapter);
+		//if(listOfDevices != null)
+			listOfDevices.setAdapter(listAdapter);
 	}
-
+	
 	public void invalidateList() {
 		listAdapter.notifyDataSetChanged();
 	}
