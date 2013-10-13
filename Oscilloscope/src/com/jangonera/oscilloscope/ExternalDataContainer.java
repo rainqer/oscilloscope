@@ -42,6 +42,10 @@ public class ExternalDataContainer {
 	public void addScanDevice(String name, String address) {
 		Log.i(Const.tag_EDC, "Adding new device to the list" + name);
 		Probe newProbe = new Probe(name, address);
+		if(scanProbes.contains(newProbe)){
+			Log.i(Const.tag_EDC, name + " - device is on the list");
+			return;
+		}
 		if (addedToReadyProbes(newProbe.address))
 			newProbe.setReady(true);
 		scanProbes.add(newProbe);

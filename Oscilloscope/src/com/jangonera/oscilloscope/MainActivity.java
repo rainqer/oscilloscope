@@ -50,19 +50,15 @@ public class MainActivity extends FragmentActivity {
 			//if (savedInstanceState.getBoolean(Const.WORKING_ON_MONO_SCREEN)) {
 			if (workingOnMonoScreen()) {
 				if (inSetup) {
-					Log.i(Const.tag_MA, "in setup 1");
 					loadSetup();
 				} else {
-					Log.i(Const.tag_MA, "not in setup 1");
 					loadGraphs();
 				}
 			} else {
-				Log.i(Const.tag_MA, "not on small screen");
 				loadSetup();
 				loadGraphs();
 			}
 		} else {
-			Log.i(Const.tag_MA, "else");
 			loadSetup();
 		}
 
@@ -157,6 +153,8 @@ public class MainActivity extends FragmentActivity {
 			display(Const.NEW_GRAPH_ADDED);
 			loadGraphs();
 			invalidateGraphsList();
+			//refresh to display which probe is "displaying"
+			invalidateScannedDeviceList();
 		}
 		else loadGraphs();
 		//Log.i(Const.tag_MA, "clicked " + Integer.toString(index));
@@ -166,6 +164,8 @@ public class MainActivity extends FragmentActivity {
 		if(externalDataContainer.removeReadyProbe(index)){
 			display(Const.GRAPH_REMOVED);
 			invalidateGraphsList();
+			//refresh to display which probe is "displaying"
+			invalidateScannedDeviceList();
 		}
 	}
 
