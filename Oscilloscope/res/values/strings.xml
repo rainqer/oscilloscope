@@ -25,5 +25,6 @@
     <string name="device">new Device</string>
     <string name="device_added">displaying</string>
     
-    <string name="entypo_graph">\u1F53E</string>
+    <string name="entypo_gears">&#xf085;</string>
+    <string name="entypo_sketch">&#xf085;</string>
 </resources>

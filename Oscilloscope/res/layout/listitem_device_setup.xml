@@ -1,7 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" 
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:padding="5dp">
 
     <TextView 
         android:layout_width="wrap_content"
@@ -23,12 +24,9 @@
         android:layout_centerVertical="true"/>
     
     <com.jangonera.oscilloscope.customview.IconView 
+        style="@style/sketch_button"
         android:id="@+id/setup_start_graph"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:textSize="20sp"
-        android:text="@string/entypo_graph"
+        android:text="@string/entypo_gears"
        	android:contentDescription="@string/setup_start_graph"
         android:layout_alignParentRight="true"/>
 

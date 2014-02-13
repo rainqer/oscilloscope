@@ -22,7 +22,7 @@ public class IconView extends TextView {
 		init();
 	}
     private void init(){
-    	Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "fonts/entypo.ttf");
+    	Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "fonts/fontawesome-webfont.ttf");
         setTypeface(tf);
     }
 }
