@@ -22,11 +22,13 @@
         android:layout_toLeftOf="@+id/setup_start_graph"
         android:layout_centerVertical="true"/>
     
-    <ImageButton 
+    <com.jangonera.oscilloscope.customview.IconView 
         android:id="@+id/setup_start_graph"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-       	android:src="@android:drawable/ic_menu_upload"
+        android:clickable="true"
+        android:textSize="20sp"
+        android:text="@string/entypo_graph"
        	android:contentDescription="@string/setup_start_graph"
         android:layout_alignParentRight="true"/>
 

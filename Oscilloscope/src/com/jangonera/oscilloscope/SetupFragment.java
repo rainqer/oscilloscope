@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.oscilloscope.R;
+import com.jangonera.oscilloscope.customview.IconView;
 
 public class SetupFragment extends Fragment {
 
@@ -68,7 +69,10 @@ public class SetupFragment extends Fragment {
 				deviceName.setText(externalDataContainer.getScanProbe(position)
 						.getName());
 				//Add Button Listener
-				((ImageButton) convertView.findViewById(R.id.setup_start_graph)).setOnClickListener(new OnClickListener() {
+				IconView iconView = (IconView) convertView.findViewById(R.id.setup_start_graph);
+				//char c[] = new String("\u1F53E").toCharArray();
+				//iconView.setText(c, 0, c.length);
+				iconView.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						context.addGraph(((View)v.getParent()).getId());
