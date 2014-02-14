@@ -10,9 +10,12 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
 
@@ -32,6 +35,8 @@ public class MainActivity extends FragmentActivity {
 	// use mBound to check if the service is available
 	private boolean mBound;
 
+    private DrawerLayout mDrawerLayout;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// Remember whether we were scanning or not
@@ -44,24 +49,18 @@ public class MainActivity extends FragmentActivity {
 		displayingGraphs = false;
 		externalDataContainer = ExternalDataContainer.getContainer();
 		if (savedInstanceState != null) {
-			inSetup = savedInstanceState.getBoolean(Const.IN_SETUP);
-			// load either setup screen or graphs if working on small screen
-			//if (savedInstanceState.getBoolean(Const.WORKING_ON_MONO_SCREEN)) {
-			if (workingOnMonoScreen()) {
-				if (inSetup) {
-					loadSetup();
-				} else {
-					loadGraphs();
-				}
-			} else {
-				loadSetup();
-				loadGraphs();
-			}
-		} else {
-			loadSetup();
-		}
 
-		bluetoothManager = BluetoothManager.getBluetoothManager();
+		}
+        loadGraphs();
+        loadSetup();
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle abdt = new ActionBarDrawerToggle(this, mDrawerLayout,
+                R.drawable.ic_launcher, 1, 2){
+
+        };
+        mDrawerLayout.setDrawerListener(abdt);
+
+        bluetoothManager = BluetoothManager.getBluetoothManager();
 		bluetoothManager.registerContext(this);
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 		filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
@@ -88,13 +87,7 @@ public class MainActivity extends FragmentActivity {
 		unregisterReceiver(bluetoothManager);
 	}
 
-	private boolean workingOnMonoScreen(){
-		if (findViewById(R.id.fullScreen) == null)
-			return false;
-		else
-			return true;
-	}
-	
+
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
@@ -140,23 +133,9 @@ public class MainActivity extends FragmentActivity {
 		// depending on the size of the screen load the fragment to different
 		// parts
 		
-		//multi
-		if (setupArea != null){
+
 			ft.replace(R.id.area_setup, setupFRAG);
-		}
-		
-		//mono
-		else{
-			//Remove the graph fragment that is not neccessary any more
-			//all fragments get finalized automatically
-			
-			GraphsFragment gf = (GraphsFragment) getSupportFragmentManager().findFragmentById(R.id.area_graphs);
-			if(gf != null){
-				ft.remove(gf);
-				graphsFRAG = null;
-			}
-			ft.replace(R.id.fullScreen, setupFRAG);
-		}	
+
 		
 		ft.commit();
 		inSetup = true;
@@ -202,26 +181,8 @@ public class MainActivity extends FragmentActivity {
 		graphsFRAG = new GraphsFragment();
 		ft = getSupportFragmentManager().beginTransaction();
 
-		// multi
-		if (graphArea != null) {
 			ft.replace(R.id.area_graphs, graphsFRAG);
-		}
 
-		// mono
-		else {
-			graphsFRAG.setBackButtonRequired(true);
-			
-			//Remove the setup fragment that is not neccessary any more
-			//all fragments get finalized automatically
-			SetupFragment sf = (SetupFragment) getSupportFragmentManager().findFragmentById(R.id.area_setup);
-			if(sf != null){
-				ft.remove(sf);
-				setupFRAG = null;
-			}
-			
-			ft.replace(R.id.fullScreen, graphsFRAG);
-			Log.i(Const.tag_MA, "small");
-		}
 		ft.commit();
 		inSetup = false;
 		displayingGraphs = true;
@@ -296,4 +257,8 @@ public class MainActivity extends FragmentActivity {
 	public BluetoothManager getBluetoothManager() {
 		return bluetoothManager;
 	}
+
+    public void openDrawer() {
+        mDrawerLayout.openDrawer(Gravity.LEFT);
+    }
 }

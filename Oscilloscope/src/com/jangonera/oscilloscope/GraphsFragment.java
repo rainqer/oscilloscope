@@ -45,7 +45,7 @@ public class GraphsFragment extends Fragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		if (backButtonRequired)
+		//if (backButtonRequired)
 			createBackButton();
 		loadListOfGraphs();
 	}
@@ -97,7 +97,8 @@ public class GraphsFragment extends Fragment {
 		backButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				context.loadSetup();
+				//context.loadSetup();
+                context.openDrawer();
 			}
 		});
 	}
