@@ -38,6 +38,10 @@ public class ExternalDataContainer {
 	public int scanDeviceQuantity() {
 		return scanProbes.size();
 	}
+	
+	public boolean hasNothingToDisplay(){
+		return readyProbes.isEmpty();
+	}
 
 	public void addScanDevice(String name, String address) {
 		Log.i(Const.tag_EDC, "Adding new device to the list" + name);

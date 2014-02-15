@@ -2,21 +2,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" 
     android:background="@drawable/main_background">
-
-    <TextView
-        android:id="@+id/setup_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="@string/setup_title"
-        android:textSize="12sp" 
-        android:layout_alignParentTop="true"/>
     
 	<TextView
 	    style="@style/title_bar"
         android:id="@+id/setup_action_hint"
         android:text="@string/setup_action_list"
-        android:layout_below="@+id/setup_title"/>
+        android:layout_alignParentTop="true"/>
 	
     <ListView 
         android:id="@+id/setup_listOfDevices"

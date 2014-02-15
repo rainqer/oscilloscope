@@ -61,6 +61,13 @@ public class SetupFragment extends Fragment {
 				if (convertView == null) {
 					convertView = context.getLayoutInflater().inflate(
 							R.layout.listitem_device_setup, viewGroup, false);
+					convertView.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							//context.addGraph(((View)v.getParent()).getId());
+							context.addGraph(v.getId());
+						}
+					});
 				}
 				convertView.setId(position);
 				// adjust the convert view
@@ -70,19 +77,15 @@ public class SetupFragment extends Fragment {
 						.getName());
 				//Add Button Listener
 				IconView iconView = (IconView) convertView.findViewById(R.id.setup_start_graph);
-				//char c[] = new String("\u1F53E").toCharArray();
-				//iconView.setText(c, 0, c.length);
-				iconView.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						context.addGraph(((View)v.getParent()).getId());
-					}
-				});
-				TextView tvProbeAdded = (TextView) convertView.findViewById(R.id.device_added);
+				TextView questionView = (TextView) convertView.findViewById(R.id.device_added);
 				if(externalDataContainer.getScanProbe(position).isAddedToReadyProbes()){
-					tvProbeAdded.setVisibility(View.VISIBLE);
+					iconView.setVisibility(View.VISIBLE);
+					questionView.setVisibility(View.INVISIBLE);
 				}
-				else tvProbeAdded.setVisibility(View.INVISIBLE);
+				else{
+					iconView.setVisibility(View.INVISIBLE);
+					questionView.setVisibility(View.VISIBLE);
+				}
 				return convertView;
 			}
 

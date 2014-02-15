@@ -8,26 +8,27 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.example.oscilloscope.R;
 import com.jangonera.oscilloscope.ExternalDataService.ExternalDataServiceBinder;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends ActionBarActivity {
+	public static int OPEN = 101;
+	public static int CLOSED = 102;
 	private FragmentTransaction ft;
 	private SetupFragment setupFRAG;
 	private GraphsFragment graphsFRAG;
-	private boolean inSetup;
-	private boolean displayingGraphs;
 	//private boolean smallScreen;
 	private BluetoothManager bluetoothManager;
 	private ExternalDataService myService;
@@ -36,63 +37,48 @@ public class MainActivity extends FragmentActivity {
 	private boolean mBound;
 
     private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// Remember whether we were scanning or not
-
 		super.onCreate(savedInstanceState);
-
 		setContentView(R.layout.activity_main);
-
-		// restore block
-		displayingGraphs = false;
 		externalDataContainer = ExternalDataContainer.getContainer();
 		if (savedInstanceState != null) {
 
 		}
+        bluetoothManager = BluetoothManager.getBluetoothManager();
         loadGraphs();
         loadSetup();
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle abdt = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.drawable.ic_launcher, 1, 2){
-
-        };
-        mDrawerLayout.setDrawerListener(abdt);
-
-        bluetoothManager = BluetoothManager.getBluetoothManager();
-		bluetoothManager.registerContext(this);
-		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-		filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-		filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-		registerReceiver(bluetoothManager, filter);
-
-		connectToService();
+        loadDrawer();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
+		registerReceiver(bluetoothManager);
+		connectToService();
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		checkIfLockDrawerOpen();
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
+		unbindService(mConnection);
+		unregisterReceiver(bluetoothManager);
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		unbindService(mConnection);
-		unregisterReceiver(bluetoothManager);
-	}
-
-
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		//outState.putBoolean(Const.WORKING_ON_MONO_SCREEN, smallScreen);
-		outState.putBoolean(Const.IN_SETUP, inSetup);
 	}
 
 	// Scan for probes button in setup
@@ -111,6 +97,11 @@ public class MainActivity extends FragmentActivity {
 	public boolean isBound() {
 		return mBound;
 	}
+	
+	public void checkIfLockDrawerOpen(){
+		if(graphsFRAG.hasNothingToDisplay()) mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+		else mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+	}
 
 	public void invalidateScannedDeviceList() {
 		if (setupFRAG != null)
@@ -124,68 +115,71 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	public void loadSetup() {
-		// if (setupFRAG == null)
-		setupFRAG = new SetupFragment();
+		if(setupFRAG == null) setupFRAG = new SetupFragment();
 		ft = getSupportFragmentManager().beginTransaction();
-		// Check the screen size. Area_setup available on large screens only
-		View setupArea = findViewById(R.id.area_setup);
-
-		// depending on the size of the screen load the fragment to different
-		// parts
-		
-
-			ft.replace(R.id.area_setup, setupFRAG);
-
-		
+		ft.replace(R.id.area_setup, setupFRAG);	
 		ft.commit();
-		inSetup = true;
 	}
 
 	public void addGraph(int index) {
 		if(externalDataContainer.getScanProbe(index).addToReadyProbes()){
 			display(Const.NEW_GRAPH_ADDED);
-			loadGraphs();
+			//loadGraphs();
 			invalidateGraphsList();
 			//refresh to display which probe is "displaying"
 			invalidateScannedDeviceList();
 		}
-		else loadGraphs();
-		//Log.i(Const.tag_MA, "clicked " + Integer.toString(index));
+		//else loadGraphs();
+		checkIfLockDrawerOpen();
 	}
 	
 	public void removeGraph(int index){
 		if(externalDataContainer.removeReadyProbe(index)){
 			display(Const.GRAPH_REMOVED);
-			
-			//TODO
-			//why isn't mono screen working without this line (after rotation) ?
-			loadGraphs();
-			
+			//loadGraphs();
 			invalidateGraphsList();
 			//refresh to display which probe is "displaying"
 			invalidateScannedDeviceList();
+			checkIfLockDrawerOpen();
 		}
 	}
 
 	private void loadGraphs() {
-		// on big screen, load graphs only once a turn
-		View graphArea = findViewById(R.id.area_graphs);
-		if((graphArea != null)&&(displayingGraphs)){
-			return;
-		}
-		
-		// on mono screen, load only graphs without setup
-		// on multi screen, keep the setup and load the graphs beside
-		// Check the screen size. Area_graphs available on large-land screens only
-		// if (graphsFRAG == null)
-		graphsFRAG = new GraphsFragment();
+		if(graphsFRAG == null) graphsFRAG = new GraphsFragment();
 		ft = getSupportFragmentManager().beginTransaction();
-
-			ft.replace(R.id.area_graphs, graphsFRAG);
-
+		ft.replace(R.id.area_graphs, graphsFRAG);
 		ft.commit();
-		inSetup = false;
-		displayingGraphs = true;
+	}
+	
+	public void openDrawer() {
+		if(mDrawerLayout != null) mDrawerLayout.openDrawer(Gravity.LEFT);
+    }
+    
+	private void registerReceiver(BluetoothManager bluetoothManager) {
+		bluetoothManager.registerContext(this);
+		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+		filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+		filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+		registerReceiver(bluetoothManager, filter);
+	}
+	
+	private void loadDrawer() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if(mDrawerLayout == null) return;
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+                R.drawable.ic_drawer, OPEN, CLOSED){
+        	@Override
+        	public void onDrawerOpened(View drawerView) {
+        		super.onDrawerOpened(drawerView);
+        		getSupportActionBar().setTitle(getString(R.string.title_activity_setup_fragment));
+        	}
+        	@Override
+			public void onDrawerClosed(View drawerView) {
+				super.onDrawerClosed(drawerView);
+        		getSupportActionBar().setTitle(getString(R.string.app_name));
+			}
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
 	}
 
 	// DATA EXCHANGE///////////////////////////////
@@ -257,8 +251,22 @@ public class MainActivity extends FragmentActivity {
 	public BluetoothManager getBluetoothManager() {
 		return bluetoothManager;
 	}
-
-    public void openDrawer() {
-        mDrawerLayout.openDrawer(Gravity.LEFT);
+	
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+          return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

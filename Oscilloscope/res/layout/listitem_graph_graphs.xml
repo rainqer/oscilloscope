@@ -36,11 +36,12 @@
         android:layout_below="@+id/graphs_probe_name"
         android:layout_toRightOf="@+id/graphs_probe_name_const"/>
         
-   <ImageButton 
+   <com.jangonera.oscilloscope.customview.IconView
         android:id="@+id/graphs_close_graph"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-       	android:src="@android:drawable/ic_input_delete"
+        style="@style/sketch_button"
+        android:text="@string/entypo_remove"
+        android:textColor="#FF0000"
+        android:clickable="false"
        	android:contentDescription="@string/graphs_remove"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"/>

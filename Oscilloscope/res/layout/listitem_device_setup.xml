@@ -8,25 +8,30 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/device"
+        android:textColor="#FFFFFF"
         android:id="@+id/device_name"
         android:textSize="20sp"
         android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/device_added"
         android:layout_centerVertical="true"/>
     
-     <TextView 
+    <TextView 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/device_added"
+        android:text="@string/device_add"
         android:id="@+id/device_added"
-        android:textSize="16sp"
-        android:textColor="#FF0000"
-        android:layout_toLeftOf="@+id/setup_start_graph"
+        android:textSize="15sp"
+        android:textColor="#AAAA00"
+        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"/>
     
     <com.jangonera.oscilloscope.customview.IconView 
         style="@style/sketch_button"
         android:id="@+id/setup_start_graph"
-        android:text="@string/entypo_gears"
+        android:textSize="15sp"
+        android:text="@string/entypo_okay"
+        android:textColor="#00FF00"
+        android:clickable="false"
        	android:contentDescription="@string/setup_start_graph"
         android:layout_alignParentRight="true"/>
 

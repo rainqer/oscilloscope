@@ -15,13 +15,13 @@ import android.widget.TextView;
 
 import com.example.oscilloscope.R;
 import com.jangonera.oscilloscope.ExternalDataContainer.Probe;
+import com.jangonera.oscilloscope.customview.IconView;
 
 public class GraphsFragment extends Fragment {
 	// Contains a list of graphs. A graphs is used by a probe to draw on it.
 	private MainActivity context;
 	// private ArrayList<Graph> graphs;
 	private boolean drawing;
-	private boolean backButtonRequired;
 	private BaseAdapter listAdapter;
 	private ListView listOfGraphs;
 	private ExternalDataContainer externalDataContainer;
@@ -45,8 +45,6 @@ public class GraphsFragment extends Fragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		//if (backButtonRequired)
-			createBackButton();
 		loadListOfGraphs();
 	}
 
@@ -86,37 +84,16 @@ public class GraphsFragment extends Fragment {
 		}
 	}
 
-	private void createBackButton() {
-		TextView backButton = (TextView) context
-				.findViewById(R.id.graphs_back_button);
-		backButton.setText(R.string.graphs_back);
-		backButton.setBackgroundColor(getResources().getColor(
-				android.R.color.darker_gray));
-		backButton.setTextSize(22);
-		backButton.setClickable(true);
-		backButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				//context.loadSetup();
-                context.openDrawer();
-			}
-		});
+	public boolean hasNothingToDisplay() {
+		return externalDataContainer.hasNothingToDisplay();
 	}
-
+	
 	public boolean isDrawing() {
 		return drawing;
 	}
 
 	public void setDrawing(boolean drawing) {
 		this.drawing = drawing;
-	}
-
-	public boolean isBackButtonRequired() {
-		return backButtonRequired;
-	}
-
-	public void setBackButtonRequired(boolean backButtonRequired) {
-		this.backButtonRequired = backButtonRequired;
 	}
 
 	// Methods related to graphs
@@ -139,7 +116,7 @@ public class GraphsFragment extends Fragment {
 				.findViewById(R.id.graphs_probe_address);
 		tvAddress.setText(readyProbe
 				.getAddress());
-		((ImageButton) convertView.findViewById(R.id.graphs_close_graph))
+		((IconView) convertView.findViewById(R.id.graphs_close_graph))
 				.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
