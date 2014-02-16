@@ -53,7 +53,6 @@ public class MainActivity extends ActionBarActivity {
         loadSetup();
         loadDrawer();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
 	}
 
 	@Override
@@ -99,8 +98,14 @@ public class MainActivity extends ActionBarActivity {
 	}
 	
 	public void checkIfLockDrawerOpen(){
-		if(graphsFRAG.hasNothingToDisplay()) mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
-		else mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+		if(graphsFRAG.hasNothingToDisplay()){
+			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+	        getSupportActionBar().setHomeButtonEnabled(false);
+		}
+		else{
+			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+	        getSupportActionBar().setHomeButtonEnabled(true);
+		}
 	}
 
 	public void invalidateScannedDeviceList() {

@@ -28,7 +28,6 @@
     <com.jangonera.oscilloscope.customview.IconView 
         style="@style/sketch_button"
         android:id="@+id/setup_start_graph"
-        android:textSize="15sp"
         android:text="@string/entypo_okay"
         android:textColor="#00FF00"
         android:clickable="false"
