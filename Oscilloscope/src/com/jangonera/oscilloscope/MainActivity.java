@@ -10,7 +10,9 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -26,6 +28,7 @@ import com.jangonera.oscilloscope.ExternalDataService.ExternalDataServiceBinder;
 public class MainActivity extends ActionBarActivity {
 	public static int OPEN = 101;
 	public static int CLOSED = 102;
+    public static long DRAWER_DELAY = 1000;
 	private FragmentTransaction ft;
 	private SetupFragment setupFRAG;
 	private GraphsFragment graphsFRAG;
@@ -65,7 +68,14 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		checkIfLockDrawerOpen();
+        Handler handler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                checkIfLockDrawerOpen();
+            }
+        };
+        handler.sendEmptyMessageDelayed(0, DRAWER_DELAY);
 	}
 
 	@Override
@@ -99,11 +109,11 @@ public class MainActivity extends ActionBarActivity {
 	
 	public void checkIfLockDrawerOpen(){
 		if(graphsFRAG.hasNothingToDisplay()){
-			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
-	        getSupportActionBar().setHomeButtonEnabled(false);
+            if(mDrawerLayout!=null) mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+            getSupportActionBar().setHomeButtonEnabled(false);
 		}
 		else{
-			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+			if(mDrawerLayout!= null) mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 	        getSupportActionBar().setHomeButtonEnabled(true);
 		}
 	}
