@@ -3,14 +3,10 @@ package com.jangonera.oscilloscope;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -25,6 +21,7 @@ import com.example.oscilloscope.R;
 public class MainActivity extends ActionBarActivity {
 	public static int OPEN = 101;
 	public static int CLOSED = 102;
+    public static long DRAWER_DELAY = 1000;
 	private FragmentTransaction ft;
 	private SetupFragment setupFRAG;
 	private GraphsFragment graphsFRAG;
@@ -100,13 +97,13 @@ public class MainActivity extends ActionBarActivity {
 			mDrawerLayout.postDelayed(new Runnable() {
 				@Override
 				public void run() {
-					mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+					if(mDrawerLayout!=null) mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
 			        getSupportActionBar().setHomeButtonEnabled(false);
 				}
 			}, drawerDelay);
 		}
 		else{
-			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+			if(mDrawerLayout!= null) mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 	        getSupportActionBar().setHomeButtonEnabled(true);
 		}
 	}

@@ -13,6 +13,7 @@
     <string name="setup_start_graph">Start Graph</string>
     
     <string name="graphs_title">Graphs</string>
+    <string name="graphs_empty">No Probes Loaded</string>
     <string name="graphs_back">Back to Settings</string>
     <string name="graphs_remove">Close this graph</string>
     <string name="new_graph_added">New graph added</string>

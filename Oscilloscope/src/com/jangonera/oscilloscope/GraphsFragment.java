@@ -25,6 +25,7 @@ public class GraphsFragment extends Fragment {
 	private boolean drawing;
 	private BaseAdapter listAdapter;
 	private ListView listOfGraphs;
+    private TextView messageGraphsEmpty;
 	private ExternalDataContainer externalDataContainer;
 
 	@Override
@@ -50,6 +51,8 @@ public class GraphsFragment extends Fragment {
 	}
 
 	private void loadListOfGraphs() {
+        messageGraphsEmpty = (TextView) context
+                .findViewById(R.id.graphs_message_empty);
 		listOfGraphs = (ListView) context
 				.findViewById(R.id.graphs_listOfGraphs);
 		listAdapter = new BaseAdapter() {
@@ -72,7 +75,11 @@ public class GraphsFragment extends Fragment {
 
 			@Override
 			public int getCount() {
-				return externalDataContainer.readyDeviceQuantity();
+                int quantity = externalDataContainer.readyDeviceQuantity();
+                if(messageGraphsEmpty!= null)
+                    if(quantity>0) messageGraphsEmpty.setVisibility(View.INVISIBLE);
+                    else messageGraphsEmpty.setVisibility(View.VISIBLE);
+				return quantity;
 			}
 		};
 		listOfGraphs.setAdapter(listAdapter);
