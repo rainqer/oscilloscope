@@ -1,7 +1,13 @@
 package com.jangonera.oscilloscope;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.UUID;
+
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -84,5 +90,31 @@ public class BluetoothManager extends BroadcastReceiver {
 				.getAction())) {
 			context.markAsFinishedDiscovery();
 		}
+	}
+
+	public BluetoothSocket connectToAddress(String address) {
+		Log.e("JGN", "CREATING PORT");
+	    BluetoothSocket bSocket = null;
+		String SPP_UUID = "00001101-0000-1000-8000-00805f9b34fb";
+		BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+        try {
+            bSocket = device.createRfcommSocketToServiceRecord(UUID.fromString(SPP_UUID));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //if(bSocket == null) return;
+        mBluetoothAdapter.cancelDiscovery();
+        try {
+            bSocket.connect();
+        } catch (IOException e) {
+            try {
+                bSocket.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            return null;
+        }
+		Log.e("JGN", "SUCCESS");
+		return bSocket;
 	}
 }

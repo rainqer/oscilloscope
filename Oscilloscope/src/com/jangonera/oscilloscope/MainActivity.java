@@ -21,7 +21,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.oscilloscope.R;
-import com.jangonera.oscilloscope.ExternalDataService.ExternalDataServiceBinder;
 
 public class MainActivity extends ActionBarActivity {
 	public static int OPEN = 101;
@@ -31,13 +30,15 @@ public class MainActivity extends ActionBarActivity {
 	private GraphsFragment graphsFRAG;
 	//private boolean smallScreen;
 	private BluetoothManager bluetoothManager;
+	private ExternalServiceDataReceiver interpreter;
 	private ExternalDataService myService;
 	private ExternalDataContainer externalDataContainer;
 	// use mBound to check if the service is available
-	private boolean mBound;
+//	private boolean mBound;
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
+    public static int drawerDelay = 500;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +46,12 @@ public class MainActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		externalDataContainer = ExternalDataContainer.getContainer();
+		externalDataContainer.registerContext(this);
 		if (savedInstanceState != null) {
 
 		}
         bluetoothManager = BluetoothManager.getBluetoothManager();
+        interpreter = new ExternalServiceDataReceiver();
         loadGraphs();
         loadSetup();
         loadDrawer();
@@ -58,21 +61,16 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		registerReceiver(bluetoothManager);
+		registerReceivers(bluetoothManager, interpreter);
 		connectToService();
-	}
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
 		checkIfLockDrawerOpen();
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
-		unbindService(mConnection);
 		unregisterReceiver(bluetoothManager);
+		if(mDrawerLayout != null) mDrawerLayout.closeDrawer(Gravity.LEFT);
 	}
 
 	@Override
@@ -82,25 +80,30 @@ public class MainActivity extends ActionBarActivity {
 
 	// Scan for probes button in setup
 	public void scanForDevices(View view) {
-		if (isBound()) {
-			bluetoothManager.scanForDevices();
-			invalidateScannedDeviceList();
-			markAsDiscovering();
-		}
+//		if (isBound()) {
+		bluetoothManager.scanForDevices();
+		invalidateScannedDeviceList();
+		markAsDiscovering();
+//		}
 	}
 
 	public ExternalDataService getService() {
 		return myService;
 	}
 
-	public boolean isBound() {
-		return mBound;
-	}
+//	public boolean isBound() {
+//		return mBound;
+//	}
 	
 	public void checkIfLockDrawerOpen(){
 		if(graphsFRAG.hasNothingToDisplay()){
-			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
-	        getSupportActionBar().setHomeButtonEnabled(false);
+			mDrawerLayout.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+			        getSupportActionBar().setHomeButtonEnabled(false);
+				}
+			}, drawerDelay);
 		}
 		else{
 			mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
@@ -160,12 +163,17 @@ public class MainActivity extends ActionBarActivity {
 		if(mDrawerLayout != null) mDrawerLayout.openDrawer(Gravity.LEFT);
     }
     
-	private void registerReceiver(BluetoothManager bluetoothManager) {
+	private void registerReceivers(BluetoothManager bluetoothManager, ExternalServiceDataReceiver interpreter) {
 		bluetoothManager.registerContext(this);
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 		filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
 		filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
 		registerReceiver(bluetoothManager, filter);
+		
+		interpreter.registerContext(this);
+		filter = new IntentFilter(ExternalServiceDataReceiver.SERVICE_READY);
+		filter.addAction(ExternalServiceDataReceiver.SERVICE_DATA_UPDATE);
+		registerReceiver(interpreter, filter);
 	}
 	
 	private void loadDrawer() {
@@ -190,27 +198,20 @@ public class MainActivity extends ActionBarActivity {
 	// DATA EXCHANGE///////////////////////////////
 	private void connectToService() {
 		Intent intent = new Intent(this, ExternalDataService.class);
-		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+		startService(intent);
+	}
+	
+	public void requestProbeSession(String address) {
+		Intent intent = new Intent(this, ExternalDataService.class);
+		intent.putExtra(ExternalDataService.PROBE_SESSION_REQUEST, address);
+		startService(intent);
 	}
 
-	private ServiceConnection mConnection = new ServiceConnection() {
-
-		@Override
-		public void onServiceConnected(ComponentName className, IBinder service) {
-			// We've bound to LocalService, cast the IBinder and get
-			// LocalService instance
-			ExternalDataServiceBinder binder = (ExternalDataServiceBinder) service;
-			myService = binder.getService();
-			// bluetoothManager.registerService(myService);
-			mBound = true;
-			invalidateScannedDeviceList();
-		}
-
-		@Override
-		public void onServiceDisconnected(ComponentName arg0) {
-			mBound = false;
-		}
-	};
+	public void finishProbeSession(String address) {
+		Intent intent = new Intent(this, ExternalDataService.class);
+		intent.putExtra(ExternalDataService.PROBE_SESSION_CANCEL_REQUEST, address);
+		startService(intent);
+	}
 
 	public void display(int message) {
 		switch (message) {

@@ -15,7 +15,7 @@ public class Graph extends View {
 	private Paint paint;
 	private Probe readyProbe;
 	private int voltY = 3; //1 = 1 volt, above and below zero
-	private int scaleY = 30; //how many pixels per volt
+	private int scaleY = 50; //how many pixels per volt
 	private final int GRID_WIDTH = 3;
 	private final int TEXT_SIZE = 8;
 	private final int MARGIN_LEFT = 15;
@@ -45,7 +45,6 @@ public class Graph extends View {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		Log.i(Const.tag_GF, "onDraw Called");
 		super.onDraw(canvas);
 		if (canvas != null) {
 			//canvas.drawLine(0, 0, 20, 20, paint);

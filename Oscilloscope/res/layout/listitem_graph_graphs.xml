@@ -3,12 +3,24 @@
     android:layout_height="match_parent" >
 
     <TextView 
+        android:id="@+id/hint_label"
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        android:layout_marginTop="-28dp"
+        android:text="Connecting"
+        android:textSize="18sp"
+        android:background="@drawable/hint_label_connecting"
+        android:gravity="center"
+        android:layout_alignParentStart="true"/>
+    
+    <TextView 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/graphs_probe_name_const"
         android:text="@string/graphs_name"
         android:textSize="12sp"
-        android:layout_alignParentStart="true"
+        android:layout_below="@+id/hint_label"
+        android:layout_alignParentLeft="true"
         android:layout_marginLeft="10sp"/>
     <TextView 
         android:layout_width="wrap_content"
@@ -16,6 +28,7 @@
         android:id="@+id/graphs_probe_name"
         android:textSize="12sp"
         android:layout_toRightOf="@+id/graphs_probe_name_const"
+        android:layout_below="@+id/hint_label"
         android:layout_marginLeft="10sp"/>
     
         <TextView 
@@ -25,7 +38,7 @@
         android:text="@string/graphs_address"
         android:textSize="12sp"
         android:layout_marginLeft="10sp"
-        android:layout_below="@+id/graphs_probe_name"/>
+        android:layout_below="@+id/graphs_probe_name_const"/>
         
         <TextView 
         android:layout_width="wrap_content"
@@ -36,6 +49,26 @@
         android:layout_below="@+id/graphs_probe_name"
         android:layout_toRightOf="@+id/graphs_probe_name_const"/>
         
+        <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/graphs_probe_state_const"
+        android:text="@string/graphs_state"
+        android:textSize="12sp"
+        android:layout_marginLeft="10sp"
+        android:layout_below="@+id/graphs_probe_address_const"/>
+        
+        <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/graphs_probe_state"
+        android:text="@string/graphs_state_disconnected"
+        android:textSize="14sp"
+        android:textColor="#FF0000"
+        android:layout_marginLeft="10sp"
+        android:layout_below="@+id/graphs_probe_address"
+        android:layout_toRightOf="@+id/graphs_probe_name_const"/>
+        
    <com.jangonera.oscilloscope.customview.IconView
         android:id="@+id/graphs_close_graph"
         style="@style/sketch_button"
@@ -44,7 +77,7 @@
         android:clickable="false"
        	android:contentDescription="@string/graphs_remove"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"/>
+		android:layout_below="@+id/hint_label"/>
    
 
 

@@ -14,6 +14,7 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.example.oscilloscope.R;
+import com.example.oscilloscope.R.string;
 import com.jangonera.oscilloscope.ExternalDataContainer.Probe;
 import com.jangonera.oscilloscope.customview.IconView;
 
@@ -116,6 +117,10 @@ public class GraphsFragment extends Fragment {
 				.findViewById(R.id.graphs_probe_address);
 		tvAddress.setText(readyProbe
 				.getAddress());
+		TextView tvState = (TextView) convertView
+				.findViewById(R.id.graphs_probe_state);
+		if(readyProbe.isActive()) tvState.setText(context.getResources().getString(string.graphs_state_connected));
+		else tvState.setText(context.getResources().getString(string.graphs_state_disconnected));
 		((IconView) convertView.findViewById(R.id.graphs_close_graph))
 				.setOnClickListener(new OnClickListener() {
 					@Override
@@ -132,7 +137,7 @@ public class GraphsFragment extends Fragment {
 		
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-		params.addRule(RelativeLayout.BELOW, R.id.graphs_probe_address);
+		params.addRule(RelativeLayout.BELOW, R.id.graphs_probe_state);
 		params.setMargins(10, 10, 10, 10);
 		
 

@@ -18,6 +18,9 @@
     <string name="new_graph_added">New graph added</string>
     <string name="graph_removed">Graph removed</string>
     <string name="graphs_address">Address-</string>
+    <string name="graphs_state">State-</string>
+    <string name="graphs_state_disconnected">disconnected</string>
+    <string name="graphs_state_connected">connected</string>
     <string name="graphs_name">Probe Name-</string>
     
     <string name="title_activity_setup_fragment">SetupFragment</string>

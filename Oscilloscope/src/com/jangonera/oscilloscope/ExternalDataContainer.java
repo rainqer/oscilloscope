@@ -12,6 +12,7 @@ public class ExternalDataContainer {
 	// fragment.
 	private ArrayList<Probe> scanProbes;
 	private ArrayList<Probe> readyProbes;
+	private MainActivity mainActivity;
 
 	// SINGLETON//////////////////////////////////
 	private static ExternalDataContainer mInstance = null;
@@ -29,6 +30,11 @@ public class ExternalDataContainer {
 
 	// ////////////////////////////////////////////
 
+
+	public void registerContext(MainActivity mainActivity) {
+		this.mainActivity = mainActivity;
+	}
+	
 	// Scan Probes////////////////////////////////////
 	// ///////////////////////////////////////////////
 	public Probe getScanProbe(int index) {
@@ -110,6 +116,7 @@ public class ExternalDataContainer {
 		if (readyProbes.remove(probe)) {
 			probe.disactivate();
 			setScanProbeOfAddressAsNoReady(probe.getAddress());
+			mainActivity.finishProbeSession(probe.getAddress());
 			return true;
 		}
 		return false;
@@ -130,6 +137,13 @@ public class ExternalDataContainer {
 				return true;
 		}
 		return false;
+	}
+	
+	public Probe getReadyProbeByAddress(String address) {
+		for(Probe probe : readyProbes) {
+			if(probe.getAddress().equals(address)) return probe;
+		}
+		return null;
 	}
 
 	// /////////////////////////////////////////////////
@@ -247,24 +261,15 @@ public class ExternalDataContainer {
 		
 		public void startInjectingValues(){
 			activate();
-			new Thread(new Runnable() {
-				
-				@Override
-				public void run() {
-					for(int value = 0; value <=10; ++value){
-						//if the probe was closed by user, break and finish thread
-						if(!isActive()) break;
-						
-						Log.i("A", Integer.toString(value));
-						pushValue(value);
-						try {
-							Thread.sleep(500);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			}).start();
+			mainActivity.requestProbeSession(address);
+//			new Thread(new Runnable() {
+//				
+//				@Override
+//				public void run() {
+//					BluetoothManager.getBluetoothManager().connectToAProbe(address);
+//				}
+////				pushValue(value);
+//			}).start();
 		}
 	}
 }
