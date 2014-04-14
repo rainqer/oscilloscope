@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
@@ -149,7 +148,12 @@ public class GraphsFragment extends Fragment {
 		
 
 		params.addRule(RelativeLayout.BELOW, R.id.graphs_probe_address);
+		//if there is any, get the previous graph and remove it
+		View previousGraph = (View) convertView.getTag();
+		if(previousGraph != null) ((ViewGroup) convertView).removeView(previousGraph);
+		//store new graph and tag it
 		((ViewGroup) convertView).addView(graph, params);
+		convertView.setTag(graph);
 		// Log.i(Const.tag_GF, "graphs added");
 		return convertView;
 	}
