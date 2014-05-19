@@ -145,7 +145,7 @@ public class Graph extends View {
 	
 	public void registerProbe(Probe readyProbe) {
 		this.readyProbe = readyProbe;
-		if(this.readyProbe!=null)
-			this.readyProbe.registerGraph(this);
+//		if(this.readyProbe!=null)
+//			this.readyProbe.registerGraph(this);
 	}
 }

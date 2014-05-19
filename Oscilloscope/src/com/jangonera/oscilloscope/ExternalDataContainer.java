@@ -92,6 +92,7 @@ public class ExternalDataContainer {
 	// ReadyProbes//////////////////////////////////////
 	// /////////////////////////////////////////////////
 	public Probe getReadyProbe(int index) {
+		if(index>=readyProbes.size()) return null;
 		return readyProbes.get(index);
 	}
 
@@ -154,7 +155,8 @@ public class ExternalDataContainer {
 		private String address;
 		private boolean ready;
 		private boolean active;
-		private Graph graph;
+//		private Graph graph;
+		private GraphDetailFragment graph;
 		private int listLength = Const.LIST_LENGTH;
 		//TODO
 		//Check which container is the fastest
@@ -229,9 +231,12 @@ public class ExternalDataContainer {
 			return removeReadyProbe(this);
 		}
 
-		public void registerGraph(Graph graph) {
-			this.graph = graph;
-		}
+//		public void registerGraph(Graph graph) {
+//			this.graph = graph;
+//		}
+		public void registerGraph(GraphDetailFragment graph) {
+		this.graph = graph;
+	}
 
 		// every time any information is passed from a socket update is called,
 		// if the graph is attached to the probe signal is sent for it to
@@ -241,7 +246,8 @@ public class ExternalDataContainer {
 				return;
 			// it is called from a read thread so post invalidate is neccessary
 			// to send invalidate from ui thread
-			graph.postInvalidate();
+//			graph.postInvalidate();
+			graph.refresh();
 		}
 		
 		public void pushValue(int value){

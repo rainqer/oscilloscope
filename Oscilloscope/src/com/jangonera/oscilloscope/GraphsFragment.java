@@ -134,50 +134,26 @@ public class GraphsFragment extends Fragment {
 						context.removeGraph(((View) v.getParent()).getId());
 					}
 				});
+		((IconView) convertView.findViewById(R.id.graphs_show_graph))
+		.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				context.loadGraphDetails(((View) v.getParent()).getId());
+			}
+		});
 
-		// Add graph to the view. Graph is taken from the arraylist within
-		// external data container
-		Graph graph = new Graph(context);
-		graph.registerProbe(readyProbe);
-		
-		
-		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-		params.addRule(RelativeLayout.BELOW, R.id.graphs_probe_state);
-		params.setMargins(10, 10, 10, 10);
-		
-
-		params.addRule(RelativeLayout.BELOW, R.id.graphs_probe_address);
-		//if there is any, get the previous graph and remove it
-		View previousGraph = (View) convertView.getTag();
-		if(previousGraph != null) ((ViewGroup) convertView).removeView(previousGraph);
-		//store new graph and tag it
-		((ViewGroup) convertView).addView(graph, params);
-		convertView.setTag(graph);
-		// Log.i(Const.tag_GF, "graphs added");
+//		Graph graph = new Graph(context);
+//		graph.registerProbe(readyProbe);
+//		
+//		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+//				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+//		params.addRule(RelativeLayout.BELOW, R.id.graphs_probe_state);
+//		params.setMargins(10, 10, 10, 10);
+//		params.addRule(RelativeLayout.BELOW, R.id.graphs_probe_address);
+//		View previousGraph = (View) convertView.getTag();
+//		if(previousGraph != null) ((ViewGroup) convertView).removeView(previousGraph);
+//		((ViewGroup) convertView).addView(graph, params);
+//		convertView.setTag(graph);
 		return convertView;
 	}
-
-	// Graph represents the area on which a ready-probe can draw information
-	// public class Graph extends View{
-	// private Paint paint;
-	//
-	// public Graph(Context context, AttributeSet attrs, int defStyle) {
-	// super(context, attrs, defStyle);
-	// }
-	// public Graph(Context context, AttributeSet attrs) {
-	// super(context, attrs);
-	// }
-	// public Graph(Context context) {
-	// super(context);
-	// }
-	// @Override
-	// protected void onDraw(Canvas canvas) {
-	// Log.i(Const.tag_GF, "onDraw Called");
-	// super.onDraw(canvas);
-	// //canvas.drawLine(0, 0, 20, 20, paint);
-	// //canvas.drawLine(20, 0, 0, 20, paint);
-	// }
-	//
-	// }
 }

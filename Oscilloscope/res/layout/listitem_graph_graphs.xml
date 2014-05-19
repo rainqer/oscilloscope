@@ -69,6 +69,15 @@
         android:layout_below="@+id/graphs_probe_address"
         android:layout_toRightOf="@+id/graphs_probe_name_const"/>
         
+<com.jangonera.oscilloscope.customview.IconView
+        android:id="@+id/graphs_show_graph"
+        style="@style/sketch_button2"
+        android:text="@string/entypo_barchart"
+       	android:contentDescription="@string/graphs_remove"
+        android:layout_alignParentLeft="true"
+		android:layout_below="@+id/graphs_probe_state"
+		android:layout_margin="5dp"/>
+        
    <com.jangonera.oscilloscope.customview.IconView
         android:id="@+id/graphs_close_graph"
         style="@style/sketch_button"

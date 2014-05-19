@@ -22,9 +22,9 @@ public class MainActivity extends ActionBarActivity {
 	public static int OPEN = 101;
 	public static int CLOSED = 102;
     public static long DRAWER_DELAY = 1000;
-	private FragmentTransaction ft;
 	private SetupFragment setupFRAG;
 	private GraphsFragment graphsFRAG;
+	private GraphDetailFragment graphDetailsFRAG;
 	//private boolean smallScreen;
 	private BluetoothManager bluetoothManager;
 	private ExternalServiceDataReceiver interpreter;
@@ -121,7 +121,7 @@ public class MainActivity extends ActionBarActivity {
 
 	public void loadSetup() {
 		if(setupFRAG == null) setupFRAG = new SetupFragment();
-		ft = getSupportFragmentManager().beginTransaction();
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		ft.replace(R.id.area_setup, setupFRAG);	
 		ft.commit();
 	}
@@ -149,9 +149,27 @@ public class MainActivity extends ActionBarActivity {
 		}
 	}
 
-	private void loadGraphs() {
+	public void loadGraphs() {
 		if(graphsFRAG == null) graphsFRAG = new GraphsFragment();
-		ft = getSupportFragmentManager().beginTransaction();
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		ft.replace(R.id.area_graphs, graphsFRAG);
+		ft.commit();
+	}
+	
+	public void loadGraphDetails(int index) {
+		if(externalDataContainer.getReadyProbe(index) == null) return;
+		if(graphDetailsFRAG == null) graphDetailsFRAG = new GraphDetailFragment();
+		graphDetailsFRAG.registerProbe(externalDataContainer.getReadyProbe(index));
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		ft.setCustomAnimations(R.anim.side_in_right, R.anim.side_out_left);
+		ft.replace(R.id.area_graphs, graphDetailsFRAG);
+		ft.commit();
+	}
+	
+	public void hideGraphDetails() {
+		if(graphsFRAG == null) graphsFRAG = new GraphsFragment();
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		ft.setCustomAnimations(R.anim.side_in_left, R.anim.side_out_right);
 		ft.replace(R.id.area_graphs, graphsFRAG);
 		ft.commit();
 	}
