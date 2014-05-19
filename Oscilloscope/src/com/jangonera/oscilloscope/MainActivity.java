@@ -158,7 +158,7 @@ public class MainActivity extends ActionBarActivity {
 	
 	public void loadGraphDetails(int index) {
 		if(externalDataContainer.getReadyProbe(index) == null) return;
-		if(graphDetailsFRAG == null) graphDetailsFRAG = new GraphDetailFragment();
+		graphDetailsFRAG = new GraphDetailFragment();
 		graphDetailsFRAG.registerProbe(externalDataContainer.getReadyProbe(index));
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		ft.setCustomAnimations(R.anim.side_in_right, R.anim.side_out_left);

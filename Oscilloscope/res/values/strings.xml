@@ -28,7 +28,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="device">new Device</string>
     <string name="device_add">sketch?</string>
-    <string name="back_button">BACK</string>
+    <string name="back_button">&lt; &lt; BACK</string>
     
     <string name="entypo_gears">&#xf085;</string>
     <string name="entypo_sketch">&#xf085;</string>
