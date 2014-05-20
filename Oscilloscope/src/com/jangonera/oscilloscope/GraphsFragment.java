@@ -138,7 +138,7 @@ public class GraphsFragment extends Fragment {
 		.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				context.loadGraphDetails(((View) v.getParent()).getId());
+				context.loadGraphDetailsWithAnimation(((View) v.getParent()).getId());
 			}
 		});
 

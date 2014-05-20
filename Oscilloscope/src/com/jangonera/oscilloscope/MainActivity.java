@@ -36,6 +36,8 @@ public class MainActivity extends ActionBarActivity {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     public static int drawerDelay = 500;
+    private static final int mainScreen = -1;
+    private static int screen = -1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +46,20 @@ public class MainActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_main);
 		externalDataContainer = ExternalDataContainer.getContainer();
 		externalDataContainer.registerContext(this);
-		if (savedInstanceState != null) {
 
-		}
         bluetoothManager = BluetoothManager.getBluetoothManager();
         interpreter = new ExternalServiceDataReceiver();
-        loadGraphs();
+		if (savedInstanceState != null && savedInstanceState.getInt("graph") != mainScreen && loadGraphDetails(savedInstanceState.getInt("graph")));
+		else loadGraphs();
         loadSetup();
         loadDrawer();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putInt("graph", screen);
 	}
 
 	@Override
@@ -93,7 +100,7 @@ public class MainActivity extends ActionBarActivity {
 //	}
 	
 	public void checkIfLockDrawerOpen(){
-		if(graphsFRAG.hasNothingToDisplay()){
+		if(graphsFRAG!=null && graphsFRAG.hasNothingToDisplay()){
 			mDrawerLayout.postDelayed(new Runnable() {
 				@Override
 				public void run() {
@@ -151,13 +158,26 @@ public class MainActivity extends ActionBarActivity {
 
 	public void loadGraphs() {
 		if(graphsFRAG == null) graphsFRAG = new GraphsFragment();
+		screen = mainScreen;
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		ft.replace(R.id.area_graphs, graphsFRAG);
 		ft.commit();
 	}
 	
-	public void loadGraphDetails(int index) {
+	public boolean loadGraphDetails(int index) {
+		if(externalDataContainer.getReadyProbe(index) == null) return false;
+		screen = index;
+		graphDetailsFRAG = new GraphDetailFragment();
+		graphDetailsFRAG.registerProbe(externalDataContainer.getReadyProbe(index));
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		ft.replace(R.id.area_graphs, graphDetailsFRAG);
+		ft.commit();
+		return true;
+	}
+	
+	public void loadGraphDetailsWithAnimation(int index) {
 		if(externalDataContainer.getReadyProbe(index) == null) return;
+		screen = index;
 		graphDetailsFRAG = new GraphDetailFragment();
 		graphDetailsFRAG.registerProbe(externalDataContainer.getReadyProbe(index));
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

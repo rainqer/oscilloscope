@@ -36,7 +36,18 @@
         <item name="android:textSize">22sp</item>
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:padding">2dp</item>
-        <item name="android:background">@drawable/button_background</item>
+        <item name="android:background">@drawable/button_scan_background</item>
+    </style>
+    
+    <style name="details_button">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">0dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:padding">2dp</item>
+        <item name="android:background">@drawable/button_back_background</item>
     </style>
     
     <style name="sketch_button">
@@ -46,7 +57,7 @@
         <item name="android:textSize">15sp</item>
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:padding">10dp</item>
-        <item name="android:background">@drawable/button_background</item>
+        <item name="android:background">@drawable/button_scan_background</item>
     </style>
     
         <style name="sketch_button2">
@@ -56,6 +67,11 @@
         <item name="android:textSize">40sp</item>
         <item name="android:textColor">#BBBBBB</item>
         <item name="android:padding">2dp</item>
-        <item name="android:background">@drawable/button_background</item>
+        <item name="android:background">@drawable/button_scan_background</item>
     </style>
+    
+	<color name="blue1">#307CC9</color>
+	<color name="gray_dark">#666666</color>
+	<color name="gray_light">#AAAAAA</color>
+        
 </resources>

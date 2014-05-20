@@ -1,8 +1,11 @@
 package com.jangonera.oscilloscope;
 
+import java.util.LinkedList;
+
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
 import org.achartengine.chart.PointStyle;
+import org.achartengine.model.TimeSeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
@@ -25,6 +28,8 @@ import com.jangonera.oscilloscope.ExternalDataContainer.Probe;
 
 public class GraphDetailFragment extends Fragment {
 	
+	public final static String timeFormat = "H:mm:ss";
+	
 	private Probe probe;
 	private final String temperature = "temperature";
 	private RelativeLayout mainLayout;
@@ -32,44 +37,9 @@ public class GraphDetailFragment extends Fragment {
     private GraphicalView graph;
     private XYMultipleSeriesDataset mDataset;
     private XYMultipleSeriesRenderer mRenderer;
-    private XYSeries mCurrentSeries;
+    private TimeSeries mCurrentSeries;
     private XYSeriesRenderer mCurrentRenderer;
 	
-    private void initChart() {
-    	mDataset = new XYMultipleSeriesDataset();
-    	mRenderer = new XYMultipleSeriesRenderer();
-        mCurrentSeries = new XYSeries("Sample Data");
-        mDataset.addSeries(mCurrentSeries);
-        mCurrentRenderer = new XYSeriesRenderer();
-        mCurrentRenderer.setColor(Color.WHITE);
-        mCurrentRenderer.setPointStyle(PointStyle.CIRCLE);
-        mCurrentRenderer.setPointStrokeWidth(3f);
-        mCurrentRenderer.setLineWidth(2f);
-        
-        mRenderer.addSeriesRenderer(mCurrentRenderer);
-        mRenderer.setApplyBackgroundColor(true);
-        mRenderer.setBackgroundColor(Color.parseColor("#307CC9"));
-        mRenderer.setMarginsColor(Color.parseColor("#307CC9"));
-        mRenderer.setMargins(new int[]{15,10,0,10});
-        mRenderer.setYLabelsAlign(Align.RIGHT);
-        mRenderer.setYLabelsPadding(2f);
-    }
-
-    private void addSampleData() {
-        mCurrentSeries.add(1, 2);
-        mCurrentSeries.add(2, 3);
-        mCurrentSeries.add(3, 2);
-        mCurrentSeries.add(4, 5);
-        mCurrentSeries.add(5, 4);
-    }
-	
-	public void registerProbe(Probe readyProbe) {
-		if(probe != null) probe.registerGraph(null);
-		probe = readyProbe;
-		if(probe != null) probe.registerGraph(this);
-	}
-	
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View content = inflater.inflate(R.layout.fragment_graph_details, container,	false);
@@ -81,23 +51,66 @@ public class GraphDetailFragment extends Fragment {
 		super.onResume();
 		mainLayout = (RelativeLayout) getActivity().findViewById(R.id.graph);
 		setupChart();
-        setupBackButton();
+        setupButtons();
 	}
-		
+    
+    private void initChart() {
+    	mDataset = new XYMultipleSeriesDataset();
+    	mRenderer = new XYMultipleSeriesRenderer();
+        mCurrentRenderer = new XYSeriesRenderer();
+        mCurrentRenderer.setColor(Color.WHITE);
+        mCurrentRenderer.setPointStyle(PointStyle.CIRCLE);
+//        mCurrentRenderer.setPointStrokeWidth(0.75f);
+        mCurrentRenderer.setFillPoints(true);
+        mCurrentRenderer.setLineWidth(1f);
+        mRenderer.addSeriesRenderer(mCurrentRenderer);
+        mRenderer.setApplyBackgroundColor(true);
+        mRenderer.setBackgroundColor(getResources().getColor(R.color.blue1));
+        mRenderer.setMarginsColor(getResources().getColor(R.color.blue1));
+        mRenderer.setMargins(new int[]{15,30,0,10});
+        mRenderer.setYLabelsAlign(Align.RIGHT);
+        mRenderer.setYLabelsPadding(2f);
+        mRenderer.setPointSize(1.75f);
+        mRenderer.setFitLegend(true);
+    }
+
+    private void addData() {
+    	if(probe == null) return;
+    	mDataset.removeSeries(mCurrentSeries);
+        mCurrentSeries = new TimeSeries("Sample Data");
+    	LinkedList<Measurement> measurements = probe.getValues();
+    	for(Measurement measurement : measurements) {
+    		mCurrentSeries.add(measurement.getDate(), measurement.getValue());
+    	}
+        mDataset.addSeries(mCurrentSeries);
+    }
+	
+	public void registerProbe(Probe readyProbe) {
+		if(probe != null) probe.registerGraph(null);
+		probe = readyProbe;
+		if(probe != null) probe.registerGraph(this);
+	}
+	
 	public void refresh() {
+		addData();
 		graph.repaint();
+	}
+	
+	public void refit() {
+		mainLayout.removeView(graph);
+		setupChart();
 	}
 	
 	private void setupChart() {
         initChart();
-        addSampleData();
-        graph = ChartFactory.getLineChartView(getActivity(), mDataset, mRenderer);
+        addData();
+        graph = ChartFactory.getTimeChartView(getActivity(), mDataset, mRenderer, timeFormat);
 		LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		params.addRule(RelativeLayout.ABOVE, R.id.back_button);
+		params.addRule(RelativeLayout.ABOVE, R.id.buttons);
         mainLayout.addView(graph, params);
 	}
 	
-	private void setupBackButton(){
+	private void setupButtons(){
 		TextView backButton = (TextView) getActivity().findViewById(R.id.back_button);
 		backButton.setOnClickListener(new View.OnClickListener() {
 			
@@ -106,7 +119,15 @@ public class GraphDetailFragment extends Fragment {
 				back();
 			}
 		});
-//		mainLayout.addView(backButton);
+		
+		TextView refitButton = (TextView) getActivity().findViewById(R.id.refit_button);
+		refitButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				refit();
+			}
+		});
 	}
 	
 	private void back() {

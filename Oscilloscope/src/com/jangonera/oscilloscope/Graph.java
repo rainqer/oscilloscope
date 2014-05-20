@@ -42,7 +42,7 @@ public class Graph extends View {
 		paint.setTextSize(TEXT_SIZE);
 	}
 
-
+/*
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
@@ -66,7 +66,7 @@ public class Graph extends View {
 			}
 		}
 	}
-
+*/
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 	    int desiredWidth = 100;

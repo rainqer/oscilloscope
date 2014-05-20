@@ -2,10 +2,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" 
     android:id="@+id/graph">
-	<TextView 
-	    style="@style/scan_button"
-	    android:text="@string/back_button"
-	    android:id="@+id/back_button"
-	    android:clickable="true"
-	    android:layout_alignParentBottom="true"/>
+    <LinearLayout 
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+	    android:layout_alignParentBottom="true"
+        android:id="@+id/buttons"
+        android:orientation="horizontal">
+	 
+	    <TextView 
+		    style="@style/details_button"
+		    android:layout_weight="1"
+		    android:text="@string/back_button"
+		    android:id="@+id/back_button"
+		    android:clickable="true"/>
+		
+		<TextView 
+		    style="@style/details_button"
+		    android:layout_weight="1"
+		    android:text="@string/refit_button"
+		    android:id="@+id/refit_button"
+		    android:clickable="true"/>
+		
+    </LinearLayout>
+
 </RelativeLayout>

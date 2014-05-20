@@ -1,6 +1,7 @@
 package com.jangonera.oscilloscope;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 
 import android.util.Log;
@@ -160,7 +161,7 @@ public class ExternalDataContainer {
 		private int listLength = Const.LIST_LENGTH;
 		//TODO
 		//Check which container is the fastest
-		LinkedList<Integer> values;
+		LinkedList<Measurement> values;
 
 		Probe(String name, String address) {
 			this.name = name;
@@ -168,7 +169,7 @@ public class ExternalDataContainer {
 			this.setReady(false);
 			this.graph = null;
 			// if(addedToReadyProbes(this.address)) this.setReady(true);
-			this.values = new LinkedList<Integer>();
+			this.values = new LinkedList<Measurement>();
 		}
 
 		Probe(int id) {
@@ -251,14 +252,15 @@ public class ExternalDataContainer {
 		}
 		
 		public void pushValue(int value){
-			values.addLast(value);
+			Measurement measurement = new Measurement(new Date(), value);
+			values.addLast(measurement);
 			if(values.size() > listLength){
 				values.removeFirst();
 			}
 			updateGraph();
 		}
 		
-		public LinkedList<Integer> getValues(){
+		public LinkedList<Measurement> getValues(){
 			return values;
 		}
 		public int getListLength(){
@@ -268,14 +270,24 @@ public class ExternalDataContainer {
 		public void startInjectingValues(){
 			activate();
 			mainActivity.requestProbeSession(address);
-//			new Thread(new Runnable() {
-//				
-//				@Override
-//				public void run() {
+			new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					int i = 1;
+					while(i<100) {
+						pushValue(++i);
+						try {
+							Thread.sleep(5000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
 //					BluetoothManager.getBluetoothManager().connectToAProbe(address);
-//				}
-////				pushValue(value);
-//			}).start();
+				}
+//				pushValue(value);
+			}).start();
 		}
 	}
 }
