@@ -68,9 +68,15 @@ public class GraphDetailFragment extends Fragment {
         mRenderer.setBackgroundColor(getResources().getColor(R.color.blue1));
         mRenderer.setMarginsColor(getResources().getColor(R.color.blue1));
         mRenderer.setMargins(new int[]{15,30,0,10});
+        mRenderer.setYAxisColor(Color.WHITE);
+        mRenderer.setXAxisColor(Color.WHITE);
+        mRenderer.setXLabelsColor(Color.WHITE);
+        mRenderer.setYLabelsColor(0, Color.WHITE);
         mRenderer.setYLabelsAlign(Align.RIGHT);
         mRenderer.setYLabelsPadding(2f);
         mRenderer.setPointSize(1.75f);
+        mRenderer.setShowGrid(true);
+        mRenderer.setGridColor(getResources().getColor(R.color.blue_grid));
         mRenderer.setFitLegend(true);
     }
 
@@ -91,7 +97,7 @@ public class GraphDetailFragment extends Fragment {
 		if(probe != null) probe.registerGraph(this);
 	}
 	
-	public void refresh() {
+	public synchronized void refresh() {
 		addData();
 		graph.repaint();
 	}
@@ -101,7 +107,7 @@ public class GraphDetailFragment extends Fragment {
 		setupChart();
 	}
 	
-	private void setupChart() {
+	private synchronized void setupChart() {
         initChart();
         addData();
         graph = ChartFactory.getTimeChartView(getActivity(), mDataset, mRenderer, timeFormat);

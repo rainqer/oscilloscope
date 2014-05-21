@@ -60,7 +60,7 @@
         <item name="android:background">@drawable/button_scan_background</item>
     </style>
     
-        <style name="sketch_button2">
+    <style name="sketch_button2">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:clickable">true</item>
@@ -70,7 +70,39 @@
         <item name="android:background">@drawable/button_scan_background</item>
     </style>
     
-	<color name="blue1">#307CC9</color>
+    <style name="graph_desc_item">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+    
+    <style name="graph_desc_item_big">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">21sp</item>
+        <item name="android:layout_marginLeft">8dp</item>
+    </style>
+    
+    <style name="graph_navigation_button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:clickable">false</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:background">@drawable/button_scan_background</item>
+        <item name="android:gravity">center</item>
+    </style>
+        
+	<color name="white">#ffffff</color>
+	<color name="blue1">#4b9ced</color>
+	<color name="blue2">#307CC9</color>
+	<color name="blue3">#346596</color>
+	<color name="blue4">#2c4863</color>
+	<color name="blue_grid">#8cbff2</color>
+	<color name="blue_dark">#2a2f35</color>
 	<color name="gray_dark">#666666</color>
 	<color name="gray_light">#AAAAAA</color>
         

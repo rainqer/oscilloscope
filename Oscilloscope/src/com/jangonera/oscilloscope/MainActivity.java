@@ -74,6 +74,7 @@ public class MainActivity extends ActionBarActivity {
 	protected void onStop() {
 		super.onStop();
 		unregisterReceiver(bluetoothManager);
+		unregisterReceiver(interpreter);
 		if(mDrawerLayout != null) mDrawerLayout.closeDrawer(Gravity.LEFT);
 	}
 
