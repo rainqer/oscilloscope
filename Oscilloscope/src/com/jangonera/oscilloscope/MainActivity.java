@@ -27,7 +27,7 @@ public class MainActivity extends ActionBarActivity {
 	private GraphDetailFragment graphDetailsFRAG;
 	//private boolean smallScreen;
 	private BluetoothManager bluetoothManager;
-	private ExternalServiceDataReceiver interpreter;
+//	private ExternalServiceDataReceiver interpreter;
 	private ExternalDataService myService;
 	private ExternalDataContainer externalDataContainer;
 	// use mBound to check if the service is available
@@ -48,7 +48,7 @@ public class MainActivity extends ActionBarActivity {
 		externalDataContainer.registerContext(this);
 
         bluetoothManager = BluetoothManager.getBluetoothManager();
-        interpreter = new ExternalServiceDataReceiver();
+//        interpreter = new ExternalServiceDataReceiver();
 		if (savedInstanceState != null && savedInstanceState.getInt("graph") != mainScreen && loadGraphDetails(savedInstanceState.getInt("graph")));
 		else loadGraphs();
         loadSetup();
@@ -65,7 +65,8 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		registerReceivers(bluetoothManager, interpreter);
+//		registerReceivers(bluetoothManager, interpreter);
+		registerReceivers(bluetoothManager);
 		connectToService();
 		checkIfLockDrawerOpen();
 	}
@@ -74,7 +75,7 @@ public class MainActivity extends ActionBarActivity {
 	protected void onStop() {
 		super.onStop();
 		unregisterReceiver(bluetoothManager);
-		unregisterReceiver(interpreter);
+//		unregisterReceiver(interpreter);
 		if(mDrawerLayout != null) mDrawerLayout.closeDrawer(Gravity.LEFT);
 	}
 
@@ -198,18 +199,19 @@ public class MainActivity extends ActionBarActivity {
 	public void openDrawer() {
 		if(mDrawerLayout != null) mDrawerLayout.openDrawer(Gravity.LEFT);
     }
-    
-	private void registerReceivers(BluetoothManager bluetoothManager, ExternalServiceDataReceiver interpreter) {
+
+//	private void registerReceivers(BluetoothManager bluetoothManager, ExternalServiceDataReceiver interpreter) {
+	private void registerReceivers(BluetoothManager bluetoothManager) {
 		bluetoothManager.registerContext(this);
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 		filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
 		filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
 		registerReceiver(bluetoothManager, filter);
 		
-		interpreter.registerContext(this);
-		filter = new IntentFilter(ExternalServiceDataReceiver.SERVICE_READY);
-		filter.addAction(ExternalServiceDataReceiver.SERVICE_DATA_UPDATE);
-		registerReceiver(interpreter, filter);
+//		interpreter.registerContext(this);
+//		filter = new IntentFilter(ExternalServiceDataReceiver.SERVICE_READY);
+//		filter.addAction(ExternalServiceDataReceiver.SERVICE_DATA_UPDATE);
+//		registerReceiver(interpreter, filter);
 	}
 	
 	private void loadDrawer() {

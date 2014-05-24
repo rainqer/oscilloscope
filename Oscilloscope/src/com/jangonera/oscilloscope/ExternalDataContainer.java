@@ -142,6 +142,7 @@ public class ExternalDataContainer {
 	}
 	
 	public Probe getReadyProbeByAddress(String address) {
+		if(readyProbes == null) return null;
 		for(Probe probe : readyProbes) {
 			if(probe.getAddress().equals(address)) return probe;
 		}
@@ -270,24 +271,24 @@ public class ExternalDataContainer {
 		public void startInjectingValues(){
 			activate();
 			mainActivity.requestProbeSession(address);
-			new Thread(new Runnable() {
-				
-				@Override
-				public void run() {
-					int i = 1;
-					while(i<100) {
-						pushValue(++i);
-						try {
-							Thread.sleep(5000);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-//					BluetoothManager.getBluetoothManager().connectToAProbe(address);
-				}
-//				pushValue(value);
-			}).start();
+//			new Thread(new Runnable() {
+//				
+//				@Override
+//				public void run() {
+//					int i = 1;
+//					while(i<100) {
+//						pushValue(++i);
+//						try {
+//							Thread.sleep(5000);
+//						} catch (InterruptedException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//					}
+////					BluetoothManager.getBluetoothManager().connectToAProbe(address);
+//				}
+////				pushValue(value);
+//			}).start();
 		}
 	}
 }

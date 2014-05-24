@@ -30,6 +30,14 @@
         </activity>
         
         <service android:name="com.jangonera.oscilloscope.ExternalDataService" />
+        <receiver android:name="com.jangonera.oscilloscope.ExternalServiceDataReceiver">
+            <intent-filter >
+                <action android:name="com.jangonera.oscilloscope.ExternalServiceDataReceiver.SERVICE_DATA_UPDATE"/>
+                <action android:name="com.jangonera.oscilloscope.ExternalServiceDataReceiver.SERVICE_REMOVE_PROBE"/>
+                <action android:name="com.jangonera.oscilloscope.ExternalServiceDataReceiver.SERVICE_READY"/>
+                
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
