@@ -83,7 +83,7 @@ public class GraphDetailFragment extends Fragment {
     private void addData() {
     	if(probe == null) return;
     	mDataset.removeSeries(mCurrentSeries);
-        mCurrentSeries = new TimeSeries("Sample Data");
+        mCurrentSeries = new TimeSeries(temperature);
     	LinkedList<Measurement> measurements = probe.getValues();
     	for(Measurement measurement : measurements) {
     		mCurrentSeries.add(measurement.getDate(), measurement.getValue());

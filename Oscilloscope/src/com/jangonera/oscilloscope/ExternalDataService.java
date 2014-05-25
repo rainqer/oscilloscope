@@ -2,6 +2,7 @@ package com.jangonera.oscilloscope;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +22,8 @@ public class ExternalDataService extends Service{
 	
 	public static final String PROBE_SESSION_REQUEST = "com.jangonera.oscilloscope.ExternalDataService.PROBE_SESSION_REQUEST";
 	public static final String PROBE_SESSION_CANCEL_REQUEST = "com.jangonera.oscilloscope.ExternalDataService.PROBE_SESSION_CANCEL_REQUEST";
+	public static final String PROBE_SETTINGS_REQUEST = "com.jangonera.oscilloscope.ExternalDataService.PROBE_SETTINGS_REQUEST";
+	public static final String PROBE_SETTINGS_REQUEST_PERIOD = "com.jangonera.oscilloscope.ExternalDataService.PROBE_SETTINGS_REQUEST_PERIOD";
 	
 	private int connectedProbes;
 	
@@ -44,6 +47,9 @@ public class ExternalDataService extends Service{
 		if((intent.getExtras()) != null){
 			if(intent.getExtras().get(PROBE_SESSION_REQUEST) != null) new SocketCreator((String) intent.getExtras().get(PROBE_SESSION_REQUEST)).start();
 			if(intent.getExtras().get(PROBE_SESSION_CANCEL_REQUEST) != null) cancelProbeSession(intent.getExtras().getString(PROBE_SESSION_CANCEL_REQUEST));
+			if(intent.getExtras().get(PROBE_SETTINGS_REQUEST) != null) {
+				sendNewPeriodToProbe(intent.getExtras().getString(PROBE_SETTINGS_REQUEST), intent.getExtras().getInt(PROBE_SETTINGS_REQUEST_PERIOD));
+			}
 		}
 		return super.onStartCommand(intent, flags, startId);
 	}
@@ -67,6 +73,12 @@ public class ExternalDataService extends Service{
 		Log.e("JGN", "SERVICE is requested to close probe session: " + address);
 		SocketReader socketToClose = addressReaderMap.get(address);
 		if(socketToClose!= null) socketToClose.finish();
+	}
+	
+	private synchronized void sendNewPeriodToProbe(String address, int period) {
+		Log.e("JGN", "SERVICE is requested to send new settings to probe : " + address);
+		SocketReader socketToWrite = addressReaderMap.get(address);
+		if(socketToWrite!= null) socketToWrite.writeData(true, period);
 	}
 	
 	private synchronized void startNewSocketReader(String address, BluetoothSocket bSocket) {
@@ -97,6 +109,8 @@ public class ExternalDataService extends Service{
 		private final int availaableTimeOuts = 3;
 		private int timeoutsUsed;
 		private boolean finish;
+		private boolean writeData;
+		private int newPeriod;
 		
 		private BluetoothSocket bSocket;
 		private String address;
@@ -111,10 +125,28 @@ public class ExternalDataService extends Service{
 			finish = true;
 		}
 		
+		public synchronized boolean shouldFinish() {
+			return finish;
+		}
+		
+		public synchronized void writeData(boolean writeData, int newPeriod) {
+			this.writeData = writeData;
+			this.newPeriod = newPeriod;
+		}
+		
+		public synchronized boolean shouldWriteData() {
+			return writeData;
+		}
+		
+		public synchronized int getNewPeriod() {
+			return newPeriod;
+		}
+		
 		@Override
 		public void run() {
 			super.run();
 	        InputStream inStream = getInputStream();
+	        OutputStream outStream = getOutputStream();
 	        if(inStream == null) return;
         	int a;
         	int tryNumber = 0;
@@ -124,10 +156,14 @@ public class ExternalDataService extends Service{
 	            try {
 	            	while(inStream.available() == 0) {
 	            		//Main thread told us to finish the session
-	            		if(finish) {
+	            		if(shouldFinish()) {
 	            			inStream.close();
 	            			close();
 	            			return;
+	            		}
+	            		//Main thread told us to send new period settings
+	            		if(shouldWriteData()) {
+	            			writeNewData(outStream, getNewPeriod());
 	            		}
 	            		if(tryNumber >= numberOfTries) {
 	            			//Close the input stream and try to get a new one
@@ -151,6 +187,15 @@ public class ExternalDataService extends Service{
 					e.printStackTrace();
 				}
             }
+		}
+
+		private void writeNewData(OutputStream outStream, int newPeriod2) throws IOException {
+			if(outStream != null) {
+				outStream.write(2);
+				outStream.write(getNewPeriod());
+				outStream.write(3);
+			}
+			writeData(false, 0);
 		}
 
 		private void close() {
@@ -196,6 +241,15 @@ public class ExternalDataService extends Service{
 		private InputStream getInputStream() {
 			try {
             	return bSocket.getInputStream();
+            } 
+            catch (IOException e) {
+            	return null;
+            }
+		}
+		
+		private OutputStream getOutputStream() {
+			try {
+            	return bSocket.getOutputStream();
             } 
             catch (IOException e) {
             	return null;

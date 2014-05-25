@@ -6,10 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.oscilloscope.R;
@@ -18,9 +22,7 @@ import com.jangonera.oscilloscope.ExternalDataContainer.Probe;
 import com.jangonera.oscilloscope.customview.IconView;
 
 public class GraphsFragment extends Fragment {
-	// Contains a list of graphs. A graphs is used by a probe to draw on it.
 	private MainActivity context;
-	// private ArrayList<Graph> graphs;
 	private boolean drawing;
 	private BaseAdapter listAdapter;
 	private ListView listOfGraphs;
@@ -87,7 +89,6 @@ public class GraphsFragment extends Fragment {
 	public void invalidateList() {
 		if (listAdapter != null) {
 			listAdapter.notifyDataSetChanged();
-			//listOfGraphs.invalidate();
 		}
 	}
 
@@ -105,7 +106,7 @@ public class GraphsFragment extends Fragment {
 
 	// Methods related to graphs
 	public View getGraphView(int position, View convertView, ViewGroup viewGroup) {
-		// If none convert not available, create new
+		// If convert not available, create new
 		if (convertView == null) {
 			convertView = context.getLayoutInflater().inflate(
 					R.layout.listitem_graph_graphs, viewGroup, false);
@@ -141,19 +142,33 @@ public class GraphsFragment extends Fragment {
 				context.loadGraphDetailsWithAnimation(((View) v.getParent()).getId());
 			}
 		});
+		ArrayAdapter adapter = ArrayAdapter.createFromResource(context, R.array.periods, R.layout.custom_spinner);
+		adapter.setDropDownViewResource(R.layout.custom_spinner_item);
+		Spinner spinner = (Spinner) convertView.findViewById(R.id.graph_period_spinner);
+		spinner.setAdapter(adapter);
+		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View v,
+					int index, long arg3) {
+				int newPeriod = 1;
+				if(index == 1) newPeriod = 3;
+				if(index == 2) newPeriod = 6;
+				Probe probe = ExternalDataContainer.getContainer().getReadyProbe(((View) v.getParent().getParent()).getId());
+				if(probe != null) probe.setNewPeriod(newPeriod);
+			}
 
-//		Graph graph = new Graph(context);
-//		graph.registerProbe(readyProbe);
-//		
-//		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-//				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-//		params.addRule(RelativeLayout.BELOW, R.id.graphs_probe_state);
-//		params.setMargins(10, 10, 10, 10);
-//		params.addRule(RelativeLayout.BELOW, R.id.graphs_probe_address);
-//		View previousGraph = (View) convertView.getTag();
-//		if(previousGraph != null) ((ViewGroup) convertView).removeView(previousGraph);
-//		((ViewGroup) convertView).addView(graph, params);
-//		convertView.setTag(graph);
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+			}
+		});
+		((IconView) convertView.findViewById(R.id.graphs_update_button))
+		.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Probe probeToUpdate = ExternalDataContainer.getContainer().getReadyProbe(((View) v.getParent()).getId());
+				if(probeToUpdate!= null ) context.changeProbeSettings(probeToUpdate.getAddress(), probeToUpdate.getNewPeriod());
+			}
+		});
 		return convertView;
 	}
 }

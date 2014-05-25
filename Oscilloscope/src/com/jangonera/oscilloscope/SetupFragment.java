@@ -64,7 +64,6 @@ public class SetupFragment extends Fragment {
 					convertView.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
-							//context.addGraph(((View)v.getParent()).getId());
 							context.addGraph(v.getId());
 						}
 					});
@@ -105,8 +104,7 @@ public class SetupFragment extends Fragment {
 				return externalDataContainer.scanDeviceQuantity();
 			}
 		};
-		//if(listOfDevices != null)
-			listOfDevices.setAdapter(listAdapter);
+		listOfDevices.setAdapter(listAdapter);
 	}
 	
 	public void invalidateList() {

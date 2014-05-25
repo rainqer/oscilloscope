@@ -48,10 +48,6 @@ public class BluetoothManager extends BroadcastReceiver {
 		}
 	}
 
-	// public void registerService(ExternalDataService service) {
-	// myService = service;
-	// }
-
 	// Clear the whole of devices - then re-scan and store every found device
 	// again
 	public void scanForDevices() {
@@ -65,8 +61,6 @@ public class BluetoothManager extends BroadcastReceiver {
 
 		turnTheBluetoothOn();
 		ExternalDataContainer.getContainer().cleanScanList();
-		//context.invalidateList();
-		//context.markAsDiscovering();
 		Log.i(Const.tag_BM, "Starting discovery now.");
 		mBluetoothAdapter.startDiscovery();
 	}
@@ -102,7 +96,6 @@ public class BluetoothManager extends BroadcastReceiver {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //if(bSocket == null) return;
         mBluetoothAdapter.cancelDiscovery();
         try {
             bSocket.connect();

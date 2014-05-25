@@ -16,6 +16,7 @@
     <string name="graphs_empty">No Probes Loaded</string>
     <string name="graphs_back">Back to Settings</string>
     <string name="graphs_remove">Close this graph</string>
+    <string name="graphs_new_period">Update</string>
     <string name="graphs_show">Show graph</string>
     <string name="new_graph_added">New graph added</string>
     <string name="graph_removed">Graph removed</string>
@@ -24,12 +25,14 @@
     <string name="graphs_state_disconnected">disconnected</string>
     <string name="graphs_state_connected">connected</string>
     <string name="graphs_name">Probe Name :</string>
+    <string name="graphs_period_text">New measurement period</string>
     
     <string name="title_activity_setup_fragment">SetupFragment</string>
     <string name="hello_world">Hello world!</string>
     <string name="device">new Device</string>
     <string name="device_add">sketch?</string>
     <string name="graph_show_button">&#xf080;  Show graph >></string>
+    <string name="graph_update_button">Update &#xf00c;</string>
     <string name="back_button">&lt;&lt; BACK</string>
     <string name="refit_button">REFIT</string>
     
@@ -38,4 +41,11 @@
     <string name="entypo_okay">&#xf00c;</string>
     <string name="entypo_remove"> &#xf00d; </string>
     <string name="entypo_barchart">&#xf080;</string>
+    
+    <string-array name="periods">
+        <item>10s\t\t\t</item>
+        <item>30s\t\t\t</item>
+        <item>1min\t\t\t</item>
+    </string-array>
+    
 </resources>

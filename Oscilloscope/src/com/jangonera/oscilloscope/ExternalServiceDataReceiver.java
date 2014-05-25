@@ -7,7 +7,6 @@ import android.util.Log;
 
 public class ExternalServiceDataReceiver extends BroadcastReceiver {
 
-//	MainActivity mainActivity;
 	public static final String SERVICE_READY = "com.jangonera.oscilloscope.ExternalServiceDataReceiver.SERVICE_READY";
 	public static final String SERVICE_DATA_UPDATE = "com.jangonera.oscilloscope.ExternalServiceDataReceiver.SERVICE_DATA_UPDATE";
 	public static final String SERVICE_REMOVE_PROBE = "com.jangonera.oscilloscope.ExternalServiceDataReceiver.SERVICE_REMOVE_PROBE";
@@ -38,10 +37,6 @@ public class ExternalServiceDataReceiver extends BroadcastReceiver {
 			Log.i("JGN", "RECEIVED - SERVICE READY");
 		}
 	}
-
-//	public void registerContext(MainActivity mainActivity) {
-//		this.mainActivity = mainActivity;
-//	}
 	
 	public boolean updateProbeValues(String address, int data) {
 		ExternalDataContainer.Probe probe = externalDataContainer.getReadyProbeByAddress(address);

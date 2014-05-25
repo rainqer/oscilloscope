@@ -101,16 +101,6 @@ public class ExternalDataContainer {
 		return readyProbes.size();
 	}
 
-//	public boolean removeReadyProbe(String name, String address) {
-//		// create a pseudo Probe of the given props and pass it to the array for
-//		// removal
-//		if (readyProbes.remove(new Probe(name, address))) {
-//			setScanProbeOfAddressAsNoReady(address);
-//			return true;
-//		}
-//		return false;
-//	}
-
 	public boolean removeReadyProbe(int index) {
 		// create a pseudo Probe of the given props and pass it to the array for
 		// removal
@@ -157,7 +147,7 @@ public class ExternalDataContainer {
 		private String address;
 		private boolean ready;
 		private boolean active;
-//		private Graph graph;
+		private int newPeriod;
 		private GraphDetailFragment graph;
 		private int listLength = Const.LIST_LENGTH;
 		//TODO
@@ -169,8 +159,8 @@ public class ExternalDataContainer {
 			this.address = address;
 			this.setReady(false);
 			this.graph = null;
-			// if(addedToReadyProbes(this.address)) this.setReady(true);
 			this.values = new LinkedList<Measurement>();
+			int newPeriod = 1;
 		}
 
 		Probe(int id) {
@@ -233,9 +223,6 @@ public class ExternalDataContainer {
 			return removeReadyProbe(this);
 		}
 
-//		public void registerGraph(Graph graph) {
-//			this.graph = graph;
-//		}
 		public void registerGraph(GraphDetailFragment graph) {
 		this.graph = graph;
 	}
@@ -248,7 +235,6 @@ public class ExternalDataContainer {
 				return;
 			// it is called from a read thread so post invalidate is neccessary
 			// to send invalidate from ui thread
-//			graph.postInvalidate();
 			graph.refresh();
 		}
 		
@@ -271,24 +257,14 @@ public class ExternalDataContainer {
 		public void startInjectingValues(){
 			activate();
 			mainActivity.requestProbeSession(address);
-//			new Thread(new Runnable() {
-//				
-//				@Override
-//				public void run() {
-//					int i = 1;
-//					while(i<100) {
-//						pushValue(++i);
-//						try {
-//							Thread.sleep(5000);
-//						} catch (InterruptedException e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
-//					}
-////					BluetoothManager.getBluetoothManager().connectToAProbe(address);
-//				}
-////				pushValue(value);
-//			}).start();
+		}
+
+		public synchronized int getNewPeriod() {
+			return newPeriod;
+		}
+
+		public synchronized void setNewPeriod(int newPeriod) {
+			this.newPeriod = newPeriod;
 		}
 	}
 }

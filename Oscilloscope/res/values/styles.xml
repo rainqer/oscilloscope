@@ -16,8 +16,7 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
-
-    
+   
     <style name="title_bar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -83,6 +82,17 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">21sp</item>
         <item name="android:layout_marginLeft">8dp</item>
+    </style>
+    
+    <style name="spinner_graph_period">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">21sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:background">@drawable/dropdown_background</item>
+        <item name="android:padding">6dp</item>
+        <item name="android:entries">@array/periods</item>
     </style>
     
     <style name="graph_navigation_button">

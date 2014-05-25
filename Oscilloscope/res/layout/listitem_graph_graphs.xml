@@ -48,6 +48,26 @@
         android:layout_below="@+id/graphs_probe_address"
         android:layout_toRightOf="@+id/graphs_probe_name_const"/>
         
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dropdown_background"
+        android:layout_below="@+id/graphs_probe_state"
+        android:id="@+id/graph_period_spinner"
+        android:layout_marginBottom="10dp"
+        android:spinnerMode="dialog"
+        android:prompt="@string/graphs_period_text"/>
+    
+    <com.jangonera.oscilloscope.customview.IconView
+        android:id="@+id/graphs_update_button"
+        style="@style/graph_navigation_button"
+        android:text="@string/graph_update_button"
+       	android:contentDescription="@string/graphs_new_period"
+       	android:layout_alignParentRight="true"
+       	android:layout_alignBottom="@+id/graph_period_spinner"
+       	android:layout_toRightOf="@+id/graph_period_spinner"
+        android:layout_below="@+id/graphs_probe_state"/>
+    
    <com.jangonera.oscilloscope.customview.IconView
         android:id="@+id/graphs_close_graph"
         style="@style/graph_navigation_button"
@@ -55,7 +75,7 @@
         android:textColor="#ff2121"
        	android:contentDescription="@string/graphs_remove"
         android:layout_alignParentLeft="true"
-		android:layout_below="@+id/graphs_probe_state"
+		android:layout_below="@+id/graph_period_spinner"
 		android:layout_alignBottom="@+id/graphs_show_graph"/>
    
 	<com.jangonera.oscilloscope.customview.IconView
@@ -65,6 +85,6 @@
        	android:contentDescription="@string/graphs_remove"
        	android:layout_toRightOf="@+id/graphs_close_graph"
        	android:layout_alignParentRight="true"
-       	android:layout_below="@+id/graphs_probe_state"/>
+       	android:layout_below="@+id/graph_period_spinner"/>
 
 </RelativeLayout>

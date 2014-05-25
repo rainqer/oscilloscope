@@ -25,13 +25,9 @@ public class MainActivity extends ActionBarActivity {
 	private SetupFragment setupFRAG;
 	private GraphsFragment graphsFRAG;
 	private GraphDetailFragment graphDetailsFRAG;
-	//private boolean smallScreen;
 	private BluetoothManager bluetoothManager;
-//	private ExternalServiceDataReceiver interpreter;
 	private ExternalDataService myService;
 	private ExternalDataContainer externalDataContainer;
-	// use mBound to check if the service is available
-//	private boolean mBound;
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -48,7 +44,6 @@ public class MainActivity extends ActionBarActivity {
 		externalDataContainer.registerContext(this);
 
         bluetoothManager = BluetoothManager.getBluetoothManager();
-//        interpreter = new ExternalServiceDataReceiver();
 		if (savedInstanceState != null && savedInstanceState.getInt("graph") != mainScreen && loadGraphDetails(savedInstanceState.getInt("graph")));
 		else loadGraphs();
         loadSetup();
@@ -65,7 +60,6 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-//		registerReceivers(bluetoothManager, interpreter);
 		registerReceivers(bluetoothManager);
 		connectToService();
 		checkIfLockDrawerOpen();
@@ -75,7 +69,6 @@ public class MainActivity extends ActionBarActivity {
 	protected void onStop() {
 		super.onStop();
 		unregisterReceiver(bluetoothManager);
-//		unregisterReceiver(interpreter);
 		if(mDrawerLayout != null) mDrawerLayout.closeDrawer(Gravity.LEFT);
 	}
 
@@ -86,21 +79,15 @@ public class MainActivity extends ActionBarActivity {
 
 	// Scan for probes button in setup
 	public void scanForDevices(View view) {
-//		if (isBound()) {
 		bluetoothManager.scanForDevices();
 		invalidateScannedDeviceList();
 		markAsDiscovering();
-//		}
 	}
 
 	public ExternalDataService getService() {
 		return myService;
 	}
 
-//	public boolean isBound() {
-//		return mBound;
-//	}
-	
 	public void checkIfLockDrawerOpen(){
 		if(graphsFRAG!=null && graphsFRAG.hasNothingToDisplay()){
 			mDrawerLayout.postDelayed(new Runnable() {
@@ -138,19 +125,16 @@ public class MainActivity extends ActionBarActivity {
 	public void addGraph(int index) {
 		if(externalDataContainer.getScanProbe(index).addToReadyProbes()){
 			display(Const.NEW_GRAPH_ADDED);
-			//loadGraphs();
 			invalidateGraphsList();
 			//refresh to display which probe is "displaying"
 			invalidateScannedDeviceList();
 		}
-		//else loadGraphs();
 		checkIfLockDrawerOpen();
 	}
 	
 	public void removeGraph(int index){
 		if(externalDataContainer.removeReadyProbe(index)){
 			display(Const.GRAPH_REMOVED);
-			//loadGraphs();
 			invalidateGraphsList();
 			//refresh to display which probe is "displaying"
 			invalidateScannedDeviceList();
@@ -190,6 +174,7 @@ public class MainActivity extends ActionBarActivity {
 	
 	public void hideGraphDetails() {
 		if(graphsFRAG == null) graphsFRAG = new GraphsFragment();
+		screen = mainScreen;
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		ft.setCustomAnimations(R.anim.side_in_left, R.anim.side_out_right);
 		ft.replace(R.id.area_graphs, graphsFRAG);
@@ -200,18 +185,12 @@ public class MainActivity extends ActionBarActivity {
 		if(mDrawerLayout != null) mDrawerLayout.openDrawer(Gravity.LEFT);
     }
 
-//	private void registerReceivers(BluetoothManager bluetoothManager, ExternalServiceDataReceiver interpreter) {
 	private void registerReceivers(BluetoothManager bluetoothManager) {
 		bluetoothManager.registerContext(this);
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 		filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
 		filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
 		registerReceiver(bluetoothManager, filter);
-		
-//		interpreter.registerContext(this);
-//		filter = new IntentFilter(ExternalServiceDataReceiver.SERVICE_READY);
-//		filter.addAction(ExternalServiceDataReceiver.SERVICE_DATA_UPDATE);
-//		registerReceiver(interpreter, filter);
 	}
 	
 	private void loadDrawer() {
@@ -248,6 +227,13 @@ public class MainActivity extends ActionBarActivity {
 	public void finishProbeSession(String address) {
 		Intent intent = new Intent(this, ExternalDataService.class);
 		intent.putExtra(ExternalDataService.PROBE_SESSION_CANCEL_REQUEST, address);
+		startService(intent);
+	}
+	
+	public void changeProbeSettings(String address, int period) {
+		Intent intent = new Intent(this, ExternalDataService.class);
+		intent.putExtra(ExternalDataService.PROBE_SETTINGS_REQUEST, address);
+		intent.putExtra(ExternalDataService.PROBE_SETTINGS_REQUEST_PERIOD, period);
 		startService(intent);
 	}
 
@@ -289,7 +275,6 @@ public class MainActivity extends ActionBarActivity {
 				&& (resultCode == Activity.RESULT_OK)) {
 			scanForDevices(null);
 		}
-
 	}
 
 	public BluetoothManager getBluetoothManager() {
