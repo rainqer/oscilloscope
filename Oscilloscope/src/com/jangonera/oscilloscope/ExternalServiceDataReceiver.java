@@ -14,11 +14,8 @@ public class ExternalServiceDataReceiver extends BroadcastReceiver {
 
 	public static final String PROBE_ADDRESS = "address";
 	public static final String DATA = "data";
-	
-	private ExternalDataContainer externalDataContainer;
-	
+		
 	public ExternalServiceDataReceiver() {
-		externalDataContainer = ExternalDataContainer.getContainer();
 	}
 
 	@Override
@@ -26,22 +23,13 @@ public class ExternalServiceDataReceiver extends BroadcastReceiver {
 		String action = intent.getAction();
 		if(action.equals(SERVICE_DATA_UPDATE)) {
 			Log.i("JGN", "RECEIVED - DATA");
-			if(updateProbeValues(intent.getExtras().getString(PROBE_ADDRESS), intent.getExtras().getInt(DATA))) Log.i("JGN", "Probe graph updated");
-			else Log.i("JGN", "Communication malfunction - unknown address");
+			ByteGluer.getInstance().processNewByte(intent.getExtras().getString(PROBE_ADDRESS), intent.getExtras().getInt(DATA));
 		}
 		else if(action.equals(SERVICE_REMOVE_PROBE)) {
 			Log.i("JGN", "RECEIVED - REMOVE" + intent.getExtras().getString(PROBE_ADDRESS));
-			
 		}
 		else{
 			Log.i("JGN", "RECEIVED - SERVICE READY");
 		}
-	}
-	
-	public boolean updateProbeValues(String address, int data) {
-		ExternalDataContainer.Probe probe = externalDataContainer.getReadyProbeByAddress(address);
-		if(probe == null) return false;
-		probe.pushValue(data);
-		return true;
 	}
 }
