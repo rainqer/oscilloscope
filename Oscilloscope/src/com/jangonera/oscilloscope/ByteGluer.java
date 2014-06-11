@@ -2,10 +2,17 @@ package com.jangonera.oscilloscope;
 
 import java.util.HashMap;
 
+import android.os.TransactionTooLargeException;
 import android.util.Log;
 
 public class ByteGluer {
 
+	public static int range = 65535;
+	public static int kelvinZero = -273;
+	public static double maximumVoltage = 3.19;
+	public static double reverseVoltageDivider = 2;
+	public static double voltageLost = 0.07;
+	
 	private ExternalDataContainer externalDataContainer;
 	private HashMap<String, Integer> mapOfFirstBytes;
 	private static ByteGluer instance = null;
@@ -38,7 +45,17 @@ public class ByteGluer {
 	public boolean updateProbeValues(String address, int data) {
 		ExternalDataContainer.Probe probe = externalDataContainer.getReadyProbeByAddress(address);
 		if(probe == null) return false;
-		probe.pushValue(data);
+		probe.pushValue(translateToTemperature(data));
 		return true;
+	}
+	
+	private double translateToTemperature(int data) {
+//		double ratio = (double)data / range;
+//		double voltage = ratio * maximumVoltage;
+//		double voltageBeforeDivider = voltage * reverseVoltageDivider + voltageLost;
+//		double measuredKelvin = voltageBeforeDivider * 100;
+//		double measuredCelcius = measuredKelvin + kelvinZero;
+//		return measuredCelcius;
+		return (((((((double)data / range) * maximumVoltage) * reverseVoltageDivider + voltageLost) * 100) + kelvinZero));
 	}
 }

@@ -238,7 +238,7 @@ public class ExternalDataContainer {
 			graph.refresh();
 		}
 		
-		public void pushValue(int value){
+		public void pushValue(double value){
 			Measurement measurement = new Measurement(new Date(), value);
 			values.addLast(measurement);
 			if(values.size() > listLength){

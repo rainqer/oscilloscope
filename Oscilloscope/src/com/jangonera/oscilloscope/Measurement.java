@@ -4,17 +4,17 @@ import java.util.Date;
 
 public class Measurement {
 	private Date date;
-	private int value;
+	private double value;
 	
-	public Measurement(Date date, int value){
+	public Measurement(Date date, double value){
 		this.date = date;
 		this.value = value;
 	}
 	
-	public int getValue() {
+	public double getValue() {
 		return value;
 	}
-	public void setValue(int value) {
+	public void setValue(double value) {
 		this.value = value;
 	}
 	public Date getDate() {
