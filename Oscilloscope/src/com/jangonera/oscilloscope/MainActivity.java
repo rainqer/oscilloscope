@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.oscilloscope.R;
+import com.jangonera.oscilloscope.GraphDetailFragment.DataType;
 
 public class MainActivity extends ActionBarActivity {
 	public static int OPEN = 101;
@@ -155,6 +156,7 @@ public class MainActivity extends ActionBarActivity {
 		screen = index;
 		graphDetailsFRAG = new GraphDetailFragment();
 		graphDetailsFRAG.registerProbe(externalDataContainer.getReadyProbe(index));
+		graphDetailsFRAG.swap(DataType.TEMPERATURE);
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		ft.replace(R.id.area_graphs, graphDetailsFRAG);
 		ft.commit();
@@ -166,6 +168,7 @@ public class MainActivity extends ActionBarActivity {
 		screen = index;
 		graphDetailsFRAG = new GraphDetailFragment();
 		graphDetailsFRAG.registerProbe(externalDataContainer.getReadyProbe(index));
+		graphDetailsFRAG.swap(DataType.TEMPERATURE);
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		ft.setCustomAnimations(R.anim.side_in_right, R.anim.side_out_left);
 		ft.replace(R.id.area_graphs, graphDetailsFRAG);

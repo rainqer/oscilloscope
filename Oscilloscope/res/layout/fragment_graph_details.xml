@@ -23,6 +23,13 @@
 		    android:id="@+id/refit_button"
 		    android:clickable="true"/>
 		
+		<TextView 
+		    style="@style/details_button"
+		    android:layout_weight="1"
+		    android:text="@string/hum_button"
+		    android:id="@+id/humtem_button"
+		    android:clickable="true"/>
+		
     </LinearLayout>
 
 </RelativeLayout>

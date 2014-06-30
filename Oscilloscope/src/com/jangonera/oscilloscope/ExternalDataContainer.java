@@ -152,14 +152,16 @@ public class ExternalDataContainer {
 		private int listLength = Const.LIST_LENGTH;
 		//TODO
 		//Check which container is the fastest
-		LinkedList<Measurement> values;
+		LinkedList<Measurement> valuesTemperature;
+		LinkedList<Measurement> valuesHumidity;
 
 		Probe(String name, String address) {
 			this.name = name;
 			this.address = address;
 			this.setReady(false);
 			this.graph = null;
-			this.values = new LinkedList<Measurement>();
+			this.valuesTemperature = new LinkedList<Measurement>();
+			this.valuesHumidity = new LinkedList<Measurement>();
 			int newPeriod = 1;
 		}
 
@@ -167,7 +169,8 @@ public class ExternalDataContainer {
 			this.name = null;
 			this.address = null;
 			this.graph = null;
-			this.values = null;
+			this.valuesTemperature = null;
+			this.valuesHumidity = null;
 		}
 
 		public String getName() {
@@ -238,18 +241,32 @@ public class ExternalDataContainer {
 			graph.refresh();
 		}
 		
-		public void pushValue(double value){
+		public void pushValueTemperature(double value){
 			Measurement measurement = new Measurement(new Date(), value);
-			values.addLast(measurement);
-			if(values.size() > listLength){
-				values.removeFirst();
+			valuesTemperature.addLast(measurement);
+			if(valuesTemperature.size() > listLength){
+				valuesTemperature.removeFirst();
 			}
 			updateGraph();
 		}
 		
-		public LinkedList<Measurement> getValues(){
-			return values;
+		public void pushValueHumidity(double value){
+			Measurement measurement = new Measurement(new Date(), value);
+			valuesHumidity.addLast(measurement);
+			if(valuesHumidity.size() > listLength){
+				valuesHumidity.removeFirst();
+			}
+			updateGraph();
 		}
+		
+		public LinkedList<Measurement> getValuesTemperature(){
+			return valuesTemperature;
+		}
+		
+		public LinkedList<Measurement> getValuesHumidity(){
+			return valuesHumidity;
+		}
+		
 		public int getListLength(){
 			return listLength;
 		}

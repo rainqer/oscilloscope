@@ -35,6 +35,8 @@
     <string name="graph_update_button">Update &#xf00c;</string>
     <string name="back_button">&lt;&lt; BACK</string>
     <string name="refit_button">REFIT</string>
+    <string name="hum_button">HUM</string>
+    <string name="tem_button">TEMP</string>
     
     <string name="entypo_gears">&#xf085;</string>
     <string name="entypo_sketch">&#xf085;</string>

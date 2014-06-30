@@ -13,7 +13,8 @@ public class ExternalServiceDataReceiver extends BroadcastReceiver {
 	
 
 	public static final String PROBE_ADDRESS = "address";
-	public static final String DATA = "data";
+	public static final String DATA_T = "temp";
+	public static final String DATA_H = "hum";
 		
 	private ExternalDataContainer externalDataContainer;
 	public ExternalServiceDataReceiver() {
@@ -25,7 +26,7 @@ public class ExternalServiceDataReceiver extends BroadcastReceiver {
 		String action = intent.getAction();
 		if(action.equals(SERVICE_DATA_UPDATE)) {
 			Log.i("JGN", "RECEIVED - DATA");
-			if(updateProbeValues(intent.getExtras().getString(PROBE_ADDRESS), intent.getExtras().getDouble(DATA))) Log.i("JGN", "Probe graph updated");
+			if(updateProbeValues(intent.getExtras().getString(PROBE_ADDRESS), intent.getExtras().getDouble(DATA_T), intent.getExtras().getDouble(DATA_H))) Log.i("JGN", "Probe temp graph updated");
 			else Log.i("JGN", "Updating probe malfunction - unknown address");
 			//ByteGluer.getInstance().processNewByte(intent.getExtras().getString(PROBE_ADDRESS), intent.getExtras().getInt(DATA));
 		}
@@ -37,10 +38,11 @@ public class ExternalServiceDataReceiver extends BroadcastReceiver {
 		}
 	}
 	
-	public boolean updateProbeValues(String address, double data) {
+	public boolean updateProbeValues(String address, double dataTemp, double dataHum) {
 		ExternalDataContainer.Probe probe = externalDataContainer.getReadyProbeByAddress(address);
 		if(probe == null) return false;
-		probe.pushValue(data);
+		probe.pushValueTemperature(dataTemp);
+		probe.pushValueHumidity(dataHum);
 		return true;
 	}
 }

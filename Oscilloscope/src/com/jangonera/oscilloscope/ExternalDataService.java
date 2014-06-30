@@ -217,7 +217,9 @@ public class ExternalDataService extends Service{
 			if(ByteGluer.getInstance().processNewByte(address, data)){
 				Intent intent = new Intent(ExternalServiceDataReceiver.SERVICE_DATA_UPDATE);
 				intent.putExtra(ExternalServiceDataReceiver.PROBE_ADDRESS, address);
-				intent.putExtra(ExternalServiceDataReceiver.DATA, ByteGluer.getInstance().getTemperature(address));
+				intent.putExtra(ExternalServiceDataReceiver.DATA_T, ByteGluer.getInstance().getTemperature(address));
+				intent.putExtra(ExternalServiceDataReceiver.DATA_H, ByteGluer.getInstance().getHumidity(address));
+				ByteGluer.getInstance().RemoveUsedData(address);
 				sendBroadcast(intent);
 			}
 		}

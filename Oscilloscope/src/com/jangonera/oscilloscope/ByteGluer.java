@@ -45,19 +45,29 @@ public class ByteGluer {
 	}
 	
 	public double getTemperature(String address) {
-		double result = translateToTemperature(mapOfFourByteMeasurements.get(address).getTemperature());
+		return translateToTemperature(mapOfFourByteMeasurements.get(address).getTemperature());
+	}
+	
+	public double getHumidity(String address) {
+		return translateToHumidity(mapOfFourByteMeasurements.get(address).getHumidity());
+	}
+	
+	public void RemoveUsedData(String address) {
 		mapOfFourByteMeasurements.remove(address);
-		return result;
 	}
 	
 	private double translateToTemperature(int data) {
-		double ratio = (double)data / range;
-		double voltage = ratio * maximumVoltage;
-		double voltageBeforeDivider = voltage * reverseVoltageDivider + voltageLost;
-		double measuredKelvin = voltageBeforeDivider * 100;
-		double measuredCelcius = measuredKelvin + kelvinZero;
-		return measuredCelcius;
-		//return (((((((double)data / range) * maximumVoltage) * reverseVoltageDivider + voltageLost) * 100) + kelvinZero));
+//		double ratio = (double)data / range;
+//		double voltage = ratio * maximumVoltage;
+//		double voltageBeforeDivider = voltage * reverseVoltageDivider + voltageLost;
+//		double measuredKelvin = voltageBeforeDivider * 100;
+//		double measuredCelcius = measuredKelvin + kelvinZero;
+//		return measuredCelcius;
+		return (((((((double)data / range) * maximumVoltage) * reverseVoltageDivider + voltageLost) * 100) + kelvinZero));
+	}
+	
+	public double translateToHumidity(int data) {
+		return -2.0468 + 0.0367*data -0.0000015955 * data * data;
 	}
 	
 	private static class FourByteMeasurement {
@@ -81,8 +91,7 @@ public class ByteGluer {
 		}
 		
 		public boolean isComplete() {
-			//if(byte1 == null || byte2 == null || byte3 == null || byte4 == null) return false;
-			if(byte1 == null || byte2 == null) return false;
+			if(byte1 == null || byte2 == null || byte3 == null || byte4 == null) return false;
 			return true;
 		}
 		
@@ -95,6 +104,11 @@ public class ByteGluer {
 		
 		public int getTemperature() {
 			int gluedValue = (byte1 << 8) | byte2;
+			return gluedValue;
+		}
+		
+		public int getHumidity() {
+			int gluedValue = (byte3 << 8) | byte4;
 			return gluedValue;
 		}
 	}

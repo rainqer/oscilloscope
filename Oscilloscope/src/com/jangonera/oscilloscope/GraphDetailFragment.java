@@ -39,7 +39,16 @@ public class GraphDetailFragment extends Fragment {
     private XYMultipleSeriesRenderer mRenderer;
     private TimeSeries mCurrentSeries;
     private XYSeriesRenderer mCurrentRenderer;
-	
+    private TextView humtembutton;
+    
+    public enum DataType {
+    	TEMPERATURE, HUMIDITY
+    }
+    private DataType dataType;
+    public void swap(DataType dataType) {
+    	this.dataType = dataType;
+    }
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View content = inflater.inflate(R.layout.fragment_graph_details, container,	false);
@@ -65,8 +74,14 @@ public class GraphDetailFragment extends Fragment {
         mCurrentRenderer.setLineWidth(1f);
         mRenderer.addSeriesRenderer(mCurrentRenderer);
         mRenderer.setApplyBackgroundColor(true);
-        mRenderer.setBackgroundColor(getResources().getColor(R.color.blue1));
-        mRenderer.setMarginsColor(getResources().getColor(R.color.blue1));
+        if(dataType != dataType.HUMIDITY) {
+        	mRenderer.setBackgroundColor(getResources().getColor(R.color.blue1));
+        	mRenderer.setMarginsColor(getResources().getColor(R.color.blue1));
+        }
+        else {
+        	mRenderer.setBackgroundColor(getResources().getColor(R.color.gray_light));
+        	mRenderer.setMarginsColor(getResources().getColor(R.color.gray_light));
+        }
         mRenderer.setMargins(new int[]{15,30,0,10});
         mRenderer.setYAxisColor(Color.WHITE);
         mRenderer.setXAxisColor(Color.WHITE);
@@ -84,8 +99,14 @@ public class GraphDetailFragment extends Fragment {
     	if(probe == null) return;
     	mDataset.removeSeries(mCurrentSeries);
         mCurrentSeries = new TimeSeries(temperature);
-    	LinkedList<Measurement> measurements = probe.getValues();
-    	for(Measurement measurement : measurements) {
+        LinkedList<Measurement> measurements;
+        if(dataType != dataType.HUMIDITY) {
+        	measurements = probe.getValuesTemperature();
+        }
+        else {
+        	measurements = probe.getValuesHumidity();
+        }
+        for(Measurement measurement : measurements) {
     		mCurrentSeries.add(measurement.getDate(), measurement.getValue());
     	}
         mDataset.addSeries(mCurrentSeries);
@@ -123,6 +144,25 @@ public class GraphDetailFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				back();
+			}
+		});
+		
+		
+		humtembutton = (TextView) getActivity().findViewById(R.id.humtem_button);
+		humtembutton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if(dataType == DataType.HUMIDITY){
+					swap(DataType.TEMPERATURE);
+					humtembutton.setText(getResources().getText(R.string.hum_button));
+			    	refit();
+				}
+				else {
+					swap(DataType.HUMIDITY);
+					humtembutton.setText(getResources().getText(R.string.tem_button));
+					refit();
+				}
 			}
 		});
 		
