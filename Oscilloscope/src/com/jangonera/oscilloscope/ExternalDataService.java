@@ -210,10 +210,16 @@ public class ExternalDataService extends Service{
 		}
 
 		private void processReceivedData(int data) {
-			Intent intent = new Intent(ExternalServiceDataReceiver.SERVICE_DATA_UPDATE);
-			intent.putExtra(ExternalServiceDataReceiver.PROBE_ADDRESS, address);
-			intent.putExtra(ExternalServiceDataReceiver.DATA, data);
-			sendBroadcast(intent);
+//			Intent intent = new Intent(ExternalServiceDataReceiver.SERVICE_DATA_UPDATE);
+//			intent.putExtra(ExternalServiceDataReceiver.PROBE_ADDRESS, address);
+//			intent.putExtra(ExternalServiceDataReceiver.DATA, data);
+//			sendBroadcast(intent);
+			if(ByteGluer.getInstance().processNewByte(address, data)){
+				Intent intent = new Intent(ExternalServiceDataReceiver.SERVICE_DATA_UPDATE);
+				intent.putExtra(ExternalServiceDataReceiver.PROBE_ADDRESS, address);
+				intent.putExtra(ExternalServiceDataReceiver.DATA, ByteGluer.getInstance().getTemperature(address));
+				sendBroadcast(intent);
+			}
 		}
 
 		//Try to reestablish the connection and return new input stream
