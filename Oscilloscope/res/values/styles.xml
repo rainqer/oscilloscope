@@ -115,5 +115,7 @@
 	<color name="blue_dark">#2a2f35</color>
 	<color name="gray_dark">#666666</color>
 	<color name="gray_light">#AAAAAA</color>
+	<color name="green1">#61bc4d</color>
+	<color name="green_light">#97d888</color>
         
 </resources>

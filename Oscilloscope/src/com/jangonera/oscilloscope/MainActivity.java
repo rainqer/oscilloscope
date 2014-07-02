@@ -35,6 +35,7 @@ public class MainActivity extends ActionBarActivity {
     public static int drawerDelay = 500;
     private static final int mainScreen = -1;
     private static int screen = -1;
+    private boolean swapToHumidity = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +46,7 @@ public class MainActivity extends ActionBarActivity {
 		externalDataContainer.registerContext(this);
 
         bluetoothManager = BluetoothManager.getBluetoothManager();
-		if (savedInstanceState != null && savedInstanceState.getInt("graph") != mainScreen && loadGraphDetails(savedInstanceState.getInt("graph")));
+		if (savedInstanceState != null && savedInstanceState.getInt("graph") != mainScreen && loadGraphDetails(savedInstanceState.getInt("graph"), savedInstanceState.getBoolean("swapToHumidity")));
 		else loadGraphs();
         loadSetup();
         loadDrawer();
@@ -56,6 +57,7 @@ public class MainActivity extends ActionBarActivity {
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putInt("graph", screen);
+		outState.putBoolean("swapToHumidity", swapToHumidity);
 	}
 
 	@Override
@@ -87,6 +89,10 @@ public class MainActivity extends ActionBarActivity {
 
 	public ExternalDataService getService() {
 		return myService;
+	}
+	
+	public void RememberToSwapToHumidity(boolean swap) {
+		swapToHumidity = swap;
 	}
 
 	public void checkIfLockDrawerOpen(){
@@ -151,12 +157,13 @@ public class MainActivity extends ActionBarActivity {
 		ft.commit();
 	}
 	
-	public boolean loadGraphDetails(int index) {
+	public boolean loadGraphDetails(int index, boolean swapToHumidity) {
 		if(externalDataContainer.getReadyProbe(index) == null) return false;
 		screen = index;
 		graphDetailsFRAG = new GraphDetailFragment();
 		graphDetailsFRAG.registerProbe(externalDataContainer.getReadyProbe(index));
-		graphDetailsFRAG.swap(DataType.TEMPERATURE);
+		if(swapToHumidity) graphDetailsFRAG.swap(DataType.HUMIDITY);
+		else graphDetailsFRAG.swap(DataType.TEMPERATURE);
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		ft.replace(R.id.area_graphs, graphDetailsFRAG);
 		ft.commit();
