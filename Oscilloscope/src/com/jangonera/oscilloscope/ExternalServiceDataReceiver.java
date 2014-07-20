@@ -17,8 +17,10 @@ public class ExternalServiceDataReceiver extends BroadcastReceiver {
 	public static final String DATA_H = "hum";
 		
 	private ExternalDataContainer externalDataContainer;
+	private DataFileExporter exporter;
 	public ExternalServiceDataReceiver() {
 		externalDataContainer = ExternalDataContainer.getContainer();
+		exporter = new DataFileExporter();
 	}
 
 	@Override
@@ -41,6 +43,7 @@ public class ExternalServiceDataReceiver extends BroadcastReceiver {
 	public boolean updateProbeValues(String address, double dataTemp, double dataHum) {
 		ExternalDataContainer.Probe probe = externalDataContainer.getReadyProbeByAddress(address);
 		if(probe == null) return false;
+		exporter.storeData(address, dataTemp, dataHum);
 		probe.pushValueTemperature(dataTemp);
 		probe.pushValueHumidity(dataHum);
 		return true;

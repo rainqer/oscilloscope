@@ -10,9 +10,9 @@ public class ByteGluer {
 
 	public static int range = 65535;
 	public static int kelvinZero = -273;
-	public static double maximumVoltage = 3.19;
+	public static double maximumVoltage = 2.5;
 	public static double reverseVoltageDivider = 2;
-	public static double voltageLost = 0.07;
+	public static double voltageDist = -0.05;
 	
 	private HashMap<String, FourByteMeasurement> mapOfFourByteMeasurements;
 	private static ByteGluer instance = null;
@@ -63,7 +63,7 @@ public class ByteGluer {
 //		double measuredKelvin = voltageBeforeDivider * 100;
 //		double measuredCelcius = measuredKelvin + kelvinZero;
 //		return measuredCelcius;
-		return (((((((double)data / range) * maximumVoltage) * reverseVoltageDivider + voltageLost) * 100) + kelvinZero));
+		return (((((((double)data / range) * maximumVoltage) * reverseVoltageDivider + voltageDist) * 100) + kelvinZero));
 	}
 	
 	public double translateToHumidity(int data) {
